@@ -10,19 +10,47 @@ import 'package:goldooni/feature/auth/presentation/widgets/drop_down_form.dart';
 import '../../../../gen/assets.gen.dart';
 import '../../../../gen/fonts.gen.dart';
 
-class RegisterFormScreen extends StatelessWidget {
-  RegisterFormScreen({super.key});
-  final nameCtrl = TextEditingController();
-  final nameFn = FocusNode();
-  final addressCtrl = TextEditingController();
-  final addressFn = FocusNode();
-  final phoneNumCtrl = TextEditingController();
-  final phoneNumFn = FocusNode();
-  final codeMeliCtrl = TextEditingController();
-  final codeMeliFn = FocusNode();
-  final latLonCtrl = TextEditingController();
-  final latLonFn = FocusNode();
+class RegisterFormScreen extends StatefulWidget {
+  const RegisterFormScreen({super.key});
 
+  @override
+  State<RegisterFormScreen> createState() => _RegisterFormScreenState();
+}
+
+class _RegisterFormScreenState extends State<RegisterFormScreen> {
+  final nameCtrl = TextEditingController();
+
+  final nameFn = FocusNode();
+
+  final addressCtrl = TextEditingController();
+
+  final addressFn = FocusNode();
+
+  final phoneNumCtrl = TextEditingController();
+
+  final phoneNumFn = FocusNode();
+
+  final codeMeliCtrl = TextEditingController();
+
+  final codeMeliFn = FocusNode();
+
+  final latLonCtrl = TextEditingController();
+
+  final latLonFn = FocusNode();
+@override
+  void dispose() {
+    nameCtrl.dispose();
+    nameFn.dispose();
+    addressCtrl.dispose();
+    addressFn.dispose();
+    phoneNumCtrl.dispose();
+    phoneNumFn.dispose();
+    codeMeliCtrl.dispose();
+    codeMeliFn.dispose();
+    latLonCtrl.dispose();
+    latLonFn.dispose();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     return Unfocus(
@@ -132,9 +160,7 @@ class RegisterFormScreen extends StatelessWidget {
                     ctrl: latLonCtrl,
                     focusNode: latLonFn,
                     suffixIcon: GestureDetector(
-                      onTap: () {
-                       
-                      },
+                      onTap: () {},
                       child: Padding(
                         padding: EdgeInsets.all(8.0),
                         child: SvgPicture.asset(Assets.svg.location),

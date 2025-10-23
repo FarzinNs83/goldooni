@@ -4,15 +4,28 @@ import 'package:goldooni/core/resources/app_colors.dart';
 import 'package:goldooni/core/utils/app_ext.dart';
 import 'package:goldooni/core/utils/unfocus.dart';
 import 'package:goldooni/core/widgets/app_text_field.dart';
+import 'package:goldooni/feature/auth/presentation/screens/verify_otp_screen.dart';
 import 'package:goldooni/feature/auth/presentation/widgets/auth_button.dart';
 import 'package:goldooni/gen/assets.gen.dart';
 import 'package:goldooni/gen/fonts.gen.dart';
 
-class SendSmsScreen extends StatelessWidget {
-  SendSmsScreen({super.key});
+class SendSmsScreen extends StatefulWidget {
+  const SendSmsScreen({super.key});
 
+  @override
+  State<SendSmsScreen> createState() => _SendSmsScreenState();
+}
+
+class _SendSmsScreenState extends State<SendSmsScreen> {
   final phoneNumber = TextEditingController();
+
   final phoneFn = FocusNode();
+  @override
+  void dispose() {
+    phoneNumber.dispose();
+    phoneFn.dispose();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     return Unfocus(
@@ -66,7 +79,12 @@ class SendSmsScreen extends StatelessWidget {
                     24.height,
                     SizedBox(
                       width: double.infinity,
-                      child: AuthButton(title: 'ورود', onPressed: () {}),
+                      child: AuthButton(
+                        title: 'ورود',
+                        onPressed: () {
+                          context.navigate(VerifyOtpScreen());
+                        },
+                      ),
                     ),
                     24.height,
                     Align(

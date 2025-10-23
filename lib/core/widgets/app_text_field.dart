@@ -20,7 +20,7 @@ class AppTextField extends StatelessWidget {
     this.keyboardType = TextInputType.text,
     required this.focusNode,
     this.nextFocus,
-    this.suffixIcon = const SizedBox.shrink(),
+    this.suffixIcon = const SizedBox(),
   });
 
   @override

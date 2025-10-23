@@ -36,7 +36,7 @@ class MainApp extends StatelessWidget {
       locale: Locale('fa', 'IR'),
       debugShowCheckedModeBanner: false,
       theme: AppTheme.appTheme,
-      home: RegisterFormScreen(),
+      home: SendSmsScreen(),
     );
   }
 }

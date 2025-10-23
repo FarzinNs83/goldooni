@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:goldooni/core/resources/app_colors.dart';
 import 'package:goldooni/core/utils/app_ext.dart';
 import 'package:goldooni/core/utils/unfocus.dart';
+import 'package:goldooni/feature/auth/presentation/screens/register_form_screen.dart';
 import 'package:goldooni/feature/auth/presentation/widgets/otp_widget.dart';
 import 'package:goldooni/gen/assets.gen.dart';
 import 'package:goldooni/gen/fonts.gen.dart';
@@ -100,7 +101,12 @@ class VerifyOtpScreen extends StatelessWidget {
                     28.height,
                     SizedBox(
                       width: double.infinity,
-                      child: AuthButton(title: 'تایید', onPressed: () {}),
+                      child: AuthButton(
+                        title: 'تایید',
+                        onPressed: () {
+                          context.navigateR(RegisterFormScreen());
+                        },
+                      ),
                     ),
                   ],
                 ),
