@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:goldooni/core/resources/app_colors.dart';
-import 'package:goldooni/gen/fonts.gen.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:goldooni/core/utils/app_ext.dart';
 
 class OTPWidget extends StatefulWidget {
-  const OTPWidget({super.key});
+  final ValueChanged<String>? onCompleted;
+  const OTPWidget({super.key, this.onCompleted});
 
   @override
   State<OTPWidget> createState() => _OTPWidgetState();
@@ -35,49 +36,55 @@ class _OTPWidgetState extends State<OTPWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: List.generate(otpLength, (index) {
-        return SizedBox(
-          height: 60,
-          width: 50,
-          child: TextFormField(
-            controller: controllers[index],
-            focusNode: focusNodes[index],
-            textAlign: TextAlign.center,
-            keyboardType: TextInputType.number,
-            maxLength: 1,
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.w600,
-              color: AppColors.neturalColor8,
-              fontFamily: FontFamily.vazirmatn,
-            ),
-            cursorColor: AppColors.white,
-            decoration: InputDecoration(
-              counterText: '',
-              enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide.none,
-                borderRadius: BorderRadius.circular(16),
+    final colors = context.theme.colorScheme;
+    final textTheme = context.textTheme;
+    return Directionality(
+      textDirection: TextDirection.ltr,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: List.generate(otpLength, (index) {
+          return SizedBox(
+            height: 60.h,
+            width: 50.w,
+            child: TextFormField(
+              controller: controllers[index],
+              focusNode: focusNodes[index],
+              textAlign: TextAlign.center,
+              keyboardType: TextInputType.number,
+              maxLength: 1,
+              style: textTheme.titleLarge?.copyWith(
+                color: colors.onSurface,
               ),
-              fillColor: AppColors.teriaryColor,
-              filled: true,
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(16),
-                borderSide: BorderSide.none,
+              cursorColor: colors.primary,
+              decoration: InputDecoration(
+                counterText: '',
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide.none,
+                  borderRadius: BorderRadius.circular(16.r),
+                ),
+                fillColor: colors.surfaceContainerHighest,
+                filled: true,
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(16.r),
+                  borderSide: BorderSide(color: colors.primary),
+                ),
               ),
+              onChanged: (value) {
+                if (value.isNotEmpty && index < otpLength - 1) {
+                  FocusScope.of(context).requestFocus(focusNodes[index + 1]);
+                }
+                if (value.isEmpty && index > 0) {
+                  FocusScope.of(context).requestFocus(focusNodes[index - 1]);
+                }
+                final otpCode = controllers.map((c) => c.text).join();
+                if (otpCode.length == otpLength) {
+                  widget.onCompleted?.call(otpCode);
+                }
+              },
             ),
-            onChanged: (value) {
-              if (value.isNotEmpty && index < otpLength - 1) {
-                FocusScope.of(context).requestFocus(focusNodes[index + 1]);
-              }
-              if (value.isEmpty && index > 0) {
-                FocusScope.of(context).requestFocus(focusNodes[index - 1]);
-              }
-            },
-          ),
-        );
-      }),
+          );
+        }),
+      ),
     );
   }
 }
