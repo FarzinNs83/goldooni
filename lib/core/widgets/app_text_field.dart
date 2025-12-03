@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import '../resources/app_colors.dart';
+import 'package:goldooni/core/utils/app_ext.dart';
 
 class AppTextField extends StatelessWidget {
   final String hintText;
@@ -10,8 +9,10 @@ class AppTextField extends StatelessWidget {
   final TextDirection txtDir;
   final TextAlign textAlign;
   final TextInputType keyboardType;
-  final Widget suffixIcon;
-  const AppTextField({
+  final Widget? suffixIcon;
+  final bool isObsecure;
+  final bool readOnly;
+  AppTextField({
     super.key,
     required this.hintText,
     required this.ctrl,
@@ -20,13 +21,16 @@ class AppTextField extends StatelessWidget {
     this.keyboardType = TextInputType.text,
     required this.focusNode,
     this.nextFocus,
-    this.suffixIcon = const SizedBox(),
+    this.suffixIcon,
+    this.readOnly = false, this.isObsecure = false,
   });
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      cursorColor: AppColors.secondaryColor,
+      obscureText: isObsecure,
+      readOnly: readOnly,
+      cursorColor: context.theme.colorScheme.primary,
       focusNode: focusNode,
       onFieldSubmitted: (_) {
         if (nextFocus != null) {
