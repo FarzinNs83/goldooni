@@ -1,23 +1,31 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:goldooni/core/resources/app_colors.dart';
 import 'package:goldooni/core/utils/app_ext.dart';
 import 'package:goldooni/core/utils/unfocus.dart';
 import 'package:goldooni/core/widgets/app_text_field.dart';
-import 'package:goldooni/feature/auth/presentation/widgets/auth_button.dart';
+import 'package:goldooni/core/widgets/app_button.dart';
 import 'package:goldooni/feature/auth/presentation/widgets/drop_down_form.dart';
+import 'package:goldooni/main_wrapper.dart';
 
 import '../../../../gen/assets.gen.dart';
-import '../../../../gen/fonts.gen.dart';
+import '../bloc/auth_bloc.dart';
 
 class RegisterFormScreen extends StatefulWidget {
-  const RegisterFormScreen({super.key});
+  final String phone;
+  const RegisterFormScreen({super.key, required this.phone});
 
   @override
   State<RegisterFormScreen> createState() => _RegisterFormScreenState();
 }
 
 class _RegisterFormScreenState extends State<RegisterFormScreen> {
+  String? day;
+  String? month;
+  String? year;
   final nameCtrl = TextEditingController();
 
   final nameFn = FocusNode();
@@ -26,7 +34,7 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
 
   final addressFn = FocusNode();
 
-  final phoneNumCtrl = TextEditingController();
+  late TextEditingController phoneNumCtrl;
 
   final phoneNumFn = FocusNode();
 
@@ -34,10 +42,24 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
 
   final codeMeliFn = FocusNode();
 
-  final latLonCtrl = TextEditingController();
+  final pwCtrl = TextEditingController();
 
-  final latLonFn = FocusNode();
-@override
+  final pwFn = FocusNode();
+
+  final latCtrl = TextEditingController();
+
+  final latFn = FocusNode();
+
+  final lonCtrl = TextEditingController();
+
+  final lonFn = FocusNode();
+  @override
+  void initState() {
+    phoneNumCtrl = TextEditingController(text: widget.phone);
+    super.initState();
+  }
+
+  @override
   void dispose() {
     nameCtrl.dispose();
     nameFn.dispose();
@@ -47,10 +69,15 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
     phoneNumFn.dispose();
     codeMeliCtrl.dispose();
     codeMeliFn.dispose();
-    latLonCtrl.dispose();
-    latLonFn.dispose();
+    pwCtrl.dispose();
+    pwFn.dispose();
+    latCtrl.dispose();
+    latFn.dispose();
+    lonCtrl.dispose();
+    lonFn.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return Unfocus(
@@ -58,14 +85,14 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
         body: SafeArea(
           child: Center(
             child: SingleChildScrollView(
-              padding: EdgeInsets.symmetric(horizontal: 16),
+              padding: EdgeInsets.symmetric(horizontal: 16.w),
               physics: BouncingScrollPhysics(),
               child: Column(
                 children: [
                   40.height,
                   SvgPicture.asset(
                     Assets.svg.logoSec,
-                    height: context.screenHeight * .1,
+                    height: 0.1.sh,
                   ),
                   40.height,
                   TextFieldLable(title: "نام و نام‌خانوادگی"),
@@ -89,6 +116,7 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                   TextFieldLable(title: "شماره همراه"),
                   8.height,
                   AppTextField(
+                    readOnly: true,
                     hintText: "۰۹۰۲۷۵۸۵۵۱۱",
                     ctrl: phoneNumCtrl,
                     focusNode: phoneNumFn,
@@ -103,6 +131,16 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                     hintText: "بدون خط تیره: 221569873",
                     ctrl: codeMeliCtrl,
                     focusNode: codeMeliFn,
+                    nextFocus: pwFn,
+                  ),
+                  16.height,
+                  TextFieldLable(title: "رمز عبور"),
+                  8.height,
+                  AppTextField(
+                    hintText: "رمز عبور",
+                    ctrl: pwCtrl,
+                    isObsecure: true,
+                    focusNode: pwFn,
                   ),
                   16.height,
                   TextFieldLable(title: "تاریخ تولد"),
@@ -111,16 +149,26 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       SizedBox(
-                        width: context.screenWidth * .3,
+                        width: 0.3.sw,
                         child: DropDownForm(
                           value: '',
                           items: List.generate(30, (index) => "${index + 1}"),
                           hint: '۱۴',
+                          onChanged: (String? value) {
+                            setState(() {
+                              day = value;
+                            });
+                          },
                         ),
                       ),
                       SizedBox(
-                        width: context.screenWidth * .3,
+                        width: 0.3.sw,
                         child: DropDownForm(
+                          onChanged: (String? value) {
+                            setState(() {
+                              month = value?.toNum();
+                            });
+                          },
                           value: '',
                           items: [
                             "فروردین",
@@ -140,8 +188,13 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                         ),
                       ),
                       SizedBox(
-                        width: context.screenWidth * .3,
+                        width: 0.3.sw,
                         child: DropDownForm(
+                          onChanged: (String? value) {
+                            setState(() {
+                              year = value;
+                            });
+                          },
                           value: '',
                           items: List.generate(
                             105,
@@ -157,8 +210,8 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                   8.height,
                   AppTextField(
                     hintText: "برای انتخاب موقعیت مکانی کلیک کنید",
-                    ctrl: latLonCtrl,
-                    focusNode: latLonFn,
+                    ctrl: latCtrl,
+                    focusNode: latFn,
                     suffixIcon: GestureDetector(
                       onTap: () {},
                       child: Padding(
@@ -168,9 +221,37 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                     ),
                   ),
                   38.height,
-                  SizedBox(
-                    width: double.infinity,
-                    child: AuthButton(title: "ثبت‌نام", onPressed: () {}),
+                  BlocConsumer<AuthBloc, AuthState>(
+                    listener: (context, state) {
+                      if (state is AuthRegister) {
+                        context.navigateR(MainWrapper());
+                      }
+                      if (state is AuthError) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text(state.failure.message)),
+                        );
+                        log(state.failure.message);
+                      }
+                    },
+                    builder: (context, state) {
+                      return SizedBox(
+                        width: double.infinity,
+                        child: AppButton(
+                          title: "ثبت‌نام",
+                          onPressed: () => context.read<AuthBloc>().register(
+                            name: nameCtrl.text,
+                            address: addressCtrl.text,
+                            birthdate:
+                                "$year-${month.toString().padLeft(2, '0')}-${day.toString().padLeft(2, '0')}",
+                            phoneNum: phoneNumCtrl.text,
+                            codeMeli: codeMeliCtrl.text,
+                            lat: "36.0757",
+                            lon: "53.5309",
+                            pw: pwCtrl.text,
+                          ),
+                        ),
+                      );
+                    },
                   ),
                   24.height,
                 ],
@@ -192,11 +273,8 @@ class TextFieldLable extends StatelessWidget {
       alignment: Alignment.centerRight,
       child: Text(
         title,
-        style: TextStyle(
-          fontFamily: FontFamily.vazirmatn,
-          fontSize: 16,
-          color: AppColors.neturalColor8,
-          fontWeight: FontWeight.w400,
+        style: context.textTheme.titleMedium?.copyWith(
+          color: context.theme.colorScheme.onSurface.withValues(alpha: .9),
         ),
       ),
     );
