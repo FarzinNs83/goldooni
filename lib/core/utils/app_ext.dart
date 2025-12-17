@@ -22,8 +22,28 @@ extension Navigate on BuildContext {
         pageBuilder: (context, animation, _) {
           return SlideTransition(
             position: animation.drive(
-              Tween(begin: Offset(1, 0), end: Offset(0, 0)).chain(
-                CurveTween(curve: Curves.easeInOut),),
+              Tween(
+                begin: Offset(1, 0),
+                end: Offset(0, 0),
+              ).chain(CurveTween(curve: Curves.easeInOut)),
+            ),
+            child: page,
+          );
+        },
+      ),
+    );
+  }
+
+  Future<dynamic> navigateRoot(Widget page) {
+    return Navigator.of(this, rootNavigator: false).push(
+      PageRouteBuilder(
+        pageBuilder: (context, animation, _) {
+          return SlideTransition(
+            position: animation.drive(
+              Tween(
+                begin: Offset(1, 0),
+                end: Offset(0, 0),
+              ).chain(CurveTween(curve: Curves.easeInOut)),
             ),
             child: page,
           );
@@ -39,8 +59,10 @@ extension Navigate on BuildContext {
         pageBuilder: (context, animation, _) {
           return SlideTransition(
             position: animation.drive(
-              Tween(begin: Offset(1, 0), end: Offset(0, 0)).chain(
-                CurveTween(curve: Curves.easeInOut),),
+              Tween(
+                begin: Offset(1, 0),
+                end: Offset(0, 0),
+              ).chain(CurveTween(curve: Curves.easeInOut)),
             ),
             child: page,
           );

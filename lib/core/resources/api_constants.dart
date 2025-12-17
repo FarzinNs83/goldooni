@@ -12,5 +12,7 @@ class ApiConstants {
   static const String newProduct = '$baseUrl/products/new/?page=';
   static const String top = '$baseUrl/products/top/?page=';
   static const String singleProduct = '$baseUrl/products/retrieve/';
+  static const String addToCart = '$baseUrl/cart/add_item/';
+  static const String getCart = '$baseUrl/cart/list_items/?page=1';
 
 }

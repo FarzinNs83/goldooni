@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:goldooni/core/resources/api_constants.dart';
-
 import '../../../../core/errors/server_exc.dart';
 import '../models/single_product_model.dart';
 

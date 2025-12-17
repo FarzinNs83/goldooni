@@ -11,6 +11,12 @@ class HomeTopLoading extends HomeState {}
 
 
 class HomeSuccess extends HomeState {}
+class HomeMoreAmazingSuccess extends HomeState {}
+class HomeMoreAmazingLoading extends HomeState {}
+class HomeMoreAmazingFailed extends HomeState {
+  final Failure failure;
+  HomeMoreAmazingFailed({required this.failure});
+}
 
 class HomeFailed extends HomeState {
   final Failure failure;

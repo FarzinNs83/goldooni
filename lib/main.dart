@@ -5,6 +5,8 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:goldooni/core/resources/app_theme.dart';
 import 'package:goldooni/feature/auth/presentation/bloc/auth_bloc.dart';
+import 'package:goldooni/feature/cart/presentation/bloc/cart_bloc.dart';
+import 'package:goldooni/feature/cats/presentation/bloc/cats_bloc.dart';
 import 'package:goldooni/feature/home/presentation/bloc/home_bloc.dart';
 import 'package:goldooni/feature/profile/presentation/bloc/profile_bloc.dart';
 import 'package:goldooni/feature/singleproduct/presentation/bloc/single_product_bloc.dart';
@@ -35,6 +37,8 @@ class MainApp extends StatelessWidget {
           BlocProvider<HomeBloc>(create: (context) => di.sl<HomeBloc>()),
           BlocProvider<ProfileBloc>(create: (context) => di.sl<ProfileBloc>()),
           BlocProvider<SplashBloc>(create: (context) => di.sl<SplashBloc>()),
+          BlocProvider<CatsBloc>(create: (context) => di.sl<CatsBloc>()),
+          BlocProvider<CartBloc>(create: (context) => di.sl<CartBloc>()),
           BlocProvider<SingleProductBloc>(create: (context) => di.sl<SingleProductBloc>()),
         ],
         child: BlocBuilder<ProfileBloc, ProfileState>(

@@ -23,10 +23,10 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<HomeBloc>().getCats(1);
-      context.read<HomeBloc>().getAmazProducts(1);
-      context.read<HomeBloc>().getNewProducts(1);
-      context.read<HomeBloc>().getTopProducts(1);
+      context.read<HomeBloc>().getCats();
+      context.read<HomeBloc>().getAmazProducts();
+      context.read<HomeBloc>().getNewProducts();
+      context.read<HomeBloc>().getTopProducts();
     });
     super.initState();
   }

@@ -7,8 +7,12 @@ import 'package:goldooni/core/utils/app_ext.dart';
 import 'package:goldooni/feature/home/domain/entities/new_products_entity.dart';
 import 'package:goldooni/feature/home/domain/entities/top_products_entity.dart';
 import 'package:goldooni/feature/home/presentation/bloc/home_bloc.dart';
+import 'package:goldooni/feature/home/presentation/screens/products_list_screen.dart';
 import 'package:goldooni/feature/singleproduct/presentation/screens/single_product_screen.dart';
 import 'package:goldooni/gen/assets.gen.dart';
+
+import '../../../../core/widgets/network_image.dart';
+import '../../../../core/widgets/shimmer_widget.dart';
 
 class ProductsCard extends StatelessWidget {
   final String title;
@@ -46,7 +50,11 @@ class ProductsCard extends StatelessWidget {
               TextButton.icon(
                 icon: Icon(Icons.keyboard_arrow_left, color: colors.secondary),
                 iconAlignment: IconAlignment.end,
-                onPressed: () {},
+                onPressed: () {
+                  context.navigateRoot(
+                    ProductsListScreen(newProducts, topProducts),
+                  );
+                },
                 label: Text(
                   'مشاهده همه',
                   style: textTheme.bodySmall?.copyWith(color: colors.secondary),
@@ -57,13 +65,42 @@ class ProductsCard extends StatelessWidget {
 
           SizedBox(
             height: 0.35.sh,
-            child: BlocConsumer<HomeBloc, HomeState>(
-              listener: (context, state) {
-                if (state is HomeNewLoading || state is HomeTopLoading) {
-                  CircularProgressIndicator();
-                }
-              },
+            child: BlocBuilder<HomeBloc, HomeState>(
               builder: (context, state) {
+                if (items.isEmpty) {
+                  return ListView.builder(
+                    itemCount: 3,
+                    scrollDirection: Axis.horizontal,
+                    physics: BouncingScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      return Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ShimmerWidget(
+                              width: 0.45.sw,
+                              height: 180.h,
+                              borderRadius: 12.r,
+                            ),
+                            8.height,
+                            ShimmerWidget(
+                              width: 0.3.sw,
+                              height: 20.h,
+                              borderRadius: 8.r,
+                            ),
+                            6.height,
+                            ShimmerWidget(
+                              width: 0.2.sw,
+                              height: 20.h,
+                              borderRadius: 12.r,
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  );
+                }
                 return ListView.builder(
                   itemCount: items.length,
                   scrollDirection: Axis.horizontal,
@@ -73,7 +110,9 @@ class ProductsCard extends StatelessWidget {
                       delay: Duration(milliseconds: index * 50),
                       duration: Duration(milliseconds: 400),
                       child: GestureDetector(
-                        onTap: () => context.navigate(SingleProductScreen(id: items[index].id)),
+                        onTap: () => context.navigate(
+                          SingleProductScreen(id: items[index].id),
+                        ),
                         child: Padding(
                           padding: EdgeInsets.all(8.r),
                           child: Container(
@@ -92,10 +131,10 @@ class ProductsCard extends StatelessWidget {
                                     flex: 3,
                                     child: ClipRRect(
                                       borderRadius: BorderRadius.circular(10.r),
-                                      child: Image.network(
-                                        items[index].image,
+                                      child: NetWorkImage(
+                                        image: items[index].image,
+                                        height: .7.sh,
                                         width: 0.8.sw,
-                                        fit: BoxFit.cover,
                                       ),
                                     ),
                                   ),
@@ -109,10 +148,11 @@ class ProductsCard extends StatelessWidget {
                                       color: colors.secondary,
                                     ),
                                   ),
-                        
+
                                   24.height,
                                   Text(
-                                    "${(items[index].price as num).comma} تومان".toPersianNumber(),
+                                    "${(items[index].price as num).comma} تومان"
+                                        .toPersianNumber(),
                                     style: textTheme.titleMedium?.copyWith(
                                       fontWeight: FontWeight.w600,
                                       color: colors.onSurface,

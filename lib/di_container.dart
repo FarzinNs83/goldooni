@@ -7,6 +7,13 @@ import 'package:goldooni/feature/auth/domain/usecases/register_form_usecase.dart
 import 'package:goldooni/feature/auth/domain/usecases/send_sms_usecase.dart';
 import 'package:goldooni/feature/auth/domain/usecases/verify_otp_usecase.dart';
 import 'package:goldooni/feature/auth/presentation/bloc/auth_bloc.dart';
+import 'package:goldooni/feature/cart/data/datasources/cart_remote.dart';
+import 'package:goldooni/feature/cart/domain/repositories/cart_repository.dart';
+import 'package:goldooni/feature/cart/presentation/bloc/cart_bloc.dart';
+import 'package:goldooni/feature/cats/data/datasources/cats_remote.dart';
+import 'package:goldooni/feature/cats/data/repositories/cats_repository_impl.dart';
+import 'package:goldooni/feature/cats/domain/repositories/cats_repository.dart';
+import 'package:goldooni/feature/cats/presentation/bloc/cats_bloc.dart';
 import 'package:goldooni/feature/home/data/datasources/amazing_products_remote.dart';
 import 'package:goldooni/feature/home/data/datasources/cats_remote.dart';
 import 'package:goldooni/feature/home/data/datasources/new_products_remote.dart';
@@ -27,6 +34,7 @@ import 'package:goldooni/feature/singleproduct/presentation/bloc/single_product_
 import 'package:goldooni/feature/splash/presentation/bloc/splash_bloc.dart';
 
 import 'feature/auth/data/datasources/auth_data_source.dart';
+import 'feature/cart/data/repositories/cart_repository_impl.dart';
 
 final sl = GetIt.instance;
 
@@ -58,6 +66,8 @@ Future<void> init() async {
   sl.registerLazySingleton<SingleProductRemote>(
     () => SingleProductRemoteImpl(sl<Dio>()),
   );
+  sl.registerLazySingleton<CatsDataRemote>(() => CatsDataRemoteImpl(sl<Dio>()));
+  sl.registerLazySingleton<CartRemote>(() => CartRemoteImpl(sl<Dio>()));
   //For repo
   sl.registerLazySingleton<AuthRepository>(
     () => AuthRepositoryImpl(dataSource: sl()),
@@ -71,6 +81,8 @@ Future<void> init() async {
   sl.registerLazySingleton<HomeRepository>(
     () => HomeRepositoryImpl(sl(), sl(), sl(), sl()),
   );
+  sl.registerLazySingleton<CatsRepository>(() => CatsRepositoryImpl(sl()));
+  sl.registerLazySingleton<CartRepository>(() => CartRepositoryImpl(sl()));
   //For usecase
   sl.registerLazySingleton(() => SendSmsUseCase(sl()));
   sl.registerLazySingleton(() => VerifyOtpUseCase(sl()));
@@ -89,4 +101,6 @@ Future<void> init() async {
   sl.registerFactory(() => ProfileBloc(sl()));
   sl.registerFactory(() => SplashBloc());
   sl.registerFactory(() => SingleProductBloc(sl()));
+  sl.registerFactory(() => CatsBloc(sl()));
+  sl.registerFactory(() => CartBloc(sl()));
 }

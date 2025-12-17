@@ -1,17 +1,24 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:goldooni/core/utils/app_ext.dart';
+import 'package:goldooni/core/utils/json_log.dart';
+import 'package:goldooni/core/widgets/network_image.dart';
+import 'package:goldooni/core/widgets/shimmer_widget.dart';
+import 'package:goldooni/feature/cart/domain/entities/cart_entity.dart';
+import 'package:goldooni/feature/cart/presentation/bloc/cart_bloc.dart';
 import 'package:goldooni/feature/singleproduct/presentation/bloc/single_product_bloc.dart';
+import 'package:goldooni/feature/singleproduct/presentation/widgets/zoom_in_image.dart';
 import 'package:goldooni/gen/assets.gen.dart';
-
 import '../../../../core/widgets/app_button.dart';
+import '../../../cart/data/models/cart_model.dart';
 
 class SingleProductScreen extends StatefulWidget {
   final int id;
   const SingleProductScreen({super.key, required this.id});
-
   @override
   State<SingleProductScreen> createState() => _SingleProductScreenState();
 }
@@ -31,8 +38,73 @@ class _SingleProductScreenState extends State<SingleProductScreen> {
       builder: (context, state) {
         if (state is SingleProductLoading) {
           return Scaffold(
-            appBar: AppBar(),
-            body: Center(child: CircularProgressIndicator()),
+            body: Column(
+              children: [
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        ShimmerWidget(height: 270.h, width: double.infinity),
+                        16.height,
+                        Padding(
+                          padding: EdgeInsetsGeometry.symmetric(
+                            horizontal: 16.w,
+                          ),
+                          child: ShimmerWidget(
+                            height: 24.h,
+                            width: double.infinity,
+                          ),
+                        ),
+                        16.height,
+                        Column(
+                          children: List.generate(8, (index) {
+                            return Padding(
+                              padding: EdgeInsets.symmetric(
+                                vertical: 4.h,
+                                horizontal: 16.w,
+                              ),
+                              child: ShimmerWidget(
+                                height: 16.h,
+                                width: double.infinity,
+                                borderRadius: 12.r,
+                              ),
+                            );
+                          }),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsetsGeometry.symmetric(horizontal: 16.w),
+                  child: Row(
+                    mainAxisAlignment: .spaceBetween,
+                    children: [
+                      ShimmerWidget(
+                        height: 48.h,
+                        width: .3.sw,
+                        borderRadius: 12.r,
+                      ),
+                      Column(
+                        spacing: 4.h,
+                        children: [
+                          ShimmerWidget(
+                            height: 16.h,
+                            width: .1.sw,
+                            borderRadius: 12.r,
+                          ),
+                          ShimmerWidget(
+                            height: 16.h,
+                            width: .1.sw,
+                            borderRadius: 12.r,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           );
         }
         if (state is SingleProductLoaded) {
@@ -45,7 +117,12 @@ class _SingleProductScreenState extends State<SingleProductScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  AppButton(title: "افزودن به سبد خرید", onPressed: () {}),
+                  AppButton(
+                    title: "افزودن به سبد خرید",
+                    onPressed: () {
+                      context.read<CartBloc>().addItem(item.id, 1);
+                    },
+                  ),
                   Column(
                     spacing: 4,
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -72,6 +149,8 @@ class _SingleProductScreenState extends State<SingleProductScreen> {
               ),
             ),
             appBar: AppBar(
+              surfaceTintColor: Colors.transparent,
+              elevation: 0,
               title: Row(
                 children: [
                   Spacer(),
@@ -106,11 +185,35 @@ class _SingleProductScreenState extends State<SingleProductScreen> {
                 tag: "singlehero",
                 child: Column(
                   children: [
-                    Image.network(
-                      item.mainImage,
-                      height: 270.h,
-                      width: double.infinity,
-                      fit: BoxFit.cover,
+                    Stack(
+                      children: [
+                        NetWorkImage(
+                          image: item.mainImage,
+                          height: 270.h,
+                          width: double.infinity,
+                        ),
+                        Positioned(
+                          bottom: 16.h,
+                          right: 16.w,
+                          child: GestureDetector(
+                            onTap: () => context.navigate(
+                              ZoomInImage(image: item.mainImage),
+                            ),
+                            child: Container(
+                              padding: EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: Colors.black.withValues(alpha: .5),
+                                shape: BoxShape.circle,
+                              ),
+                              child: Icon(
+                                Icons.zoom_in_map_rounded,
+                                size: 24.r,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                     Container(
                       color: colors.surface,
@@ -195,7 +298,9 @@ class _SingleProductScreenState extends State<SingleProductScreen> {
                             Row(
                               children: [
                                 Text(
-                                  item.averageStars.toString().toPersianNumber(),
+                                  item.averageStars
+                                      .toString()
+                                      .toPersianNumber(),
                                   style: textTheme.headlineSmall?.copyWith(
                                     color: colors.secondary,
                                   ),

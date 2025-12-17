@@ -1,3 +1,4 @@
+import 'dart:developer';
 
 import 'package:dio/dio.dart';
 import 'package:goldooni/feature/home/data/models/amazing_products_model.dart';
@@ -14,26 +15,18 @@ class AmazingProductsRemoteImpl implements AmazingProductsRemote {
   AmazingProductsRemoteImpl(this.dio);
   @override
   Future<List<AmazingProductsModel>> getAmazingData(int page) async {
-    page = 1;
     try {
       final res = await dio.get('${ApiConstants.amazing}$page');
-      if (res.data['next'] != null) {
-        if (res.statusCode == 200) {
-          return (res.data['results'] as List)
-    .map((e) => AmazingProductsModel.fromJson(e))
-    .toList();
-
-        } else {
-          throw ServerExc(message: res.statusMessage.toString());
-        }
-      } else {
-        throw ServerExc(message: "No more data");
+      if (res.statusCode == 200) {
+        return (res.data['results'] as List)
+            .map((e) => AmazingProductsModel.fromJson(e))
+            .toList();
       }
+      throw ServerExc(message: res.statusMessage.toString());
     } on DioException catch (e) {
-      throw ServerExc(
-        message:
-            "Error ${e.response?.statusCode}: ${e.response?.data} \n ${e.toString()}",
-      );
+      log(e.toString());
+      log("No more data found");
+      return [];
     }
   }
 }

@@ -30,30 +30,22 @@ class SplashBloc extends Cubit<SplashState> {
       log(e.response!.statusCode.toString());
       log("${e.response?.data}");
       emit(SplashAccessFailure());
-      _validateRefreshToken();
-      validateAccessToken();
+      await _validateRefreshToken();
+      await validateAccessToken();
     }
   }
 
   Future<void> _validateRefreshToken() async {
     SharedPref.instance.remove('token');
     try {
-      final res = await _dio.get(
+      final res = await _dio.post(
         ApiConstants.access,
         queryParameters: {'refresh': SharedPref.instance.getString('refresh')},
-        options: Options(
-          headers: {
-            "Authorization":
-                "Bearer ${SharedPref.instance.getString('refresh')}",
-          },
-        ),
       );
       if (res.statusCode == 201) {
         emit(SplashRefreshSuccess());
         jsonLog(res.data);
-        SharedPref.instance.remove('refresh');
         SharedPref.instance.setString('token', res.data["access"]);
-        SharedPref.instance.setString('refresh', res.data["refresh"]);
       } else if (res.statusCode == 401) {
         emit(SplashRefreshFailure());
         jsonLog(res.data);

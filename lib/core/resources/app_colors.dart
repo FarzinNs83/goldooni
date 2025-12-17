@@ -38,7 +38,7 @@ class AppColorSchemes {
     onPrimary: AppColors.white,
     secondary: AppColors.secondaryColor,
     onSecondary: AppColors.white,
-    surface: AppColors.white,
+    surface: AppColors.scaffoldBackgroundColor,
     onSurface: AppColors.neturalColor8,
     tertiary: AppColors.teriaryColor,
     onTertiary: AppColors.secondaryColor,

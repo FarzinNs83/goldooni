@@ -14,5 +14,20 @@ class SingleProductEntity {
   final double averageStars;
   final int countComments;
 
-  SingleProductEntity({required this.id, required this.title, required this.description, required this.mainImage, required this.price, required this.discount, required this.finalPrice, required this.status, required this.createdAt, required this.category, required this.images, required this.comments, required this.averageStars, required this.countComments});
+  SingleProductEntity({
+    required this.id,
+    required this.title,
+    required this.description,
+    required this.mainImage,
+    required this.price,
+    required this.discount,
+    required this.finalPrice,
+    required this.status,
+    required this.createdAt,
+    required this.category,
+    required this.images,
+    required this.comments,
+    required this.averageStars,
+    required this.countComments,
+  });
 }

@@ -18,13 +18,10 @@ class MainWrapper extends StatefulWidget {
 }
 
 class _MainWrapperState extends State<MainWrapper> {
-  final List<Widget> pages = [
-    const HomeScreen(),
-    const CatsScreen(),
-    const CartScreen(),
-    const BlogScreen(),
-    const ProfileScreen(),
-  ];
+  final List<GlobalKey<NavigatorState>> navKeys = List.generate(
+    5,
+    (index) => GlobalKey<NavigatorState>(),
+  );
 
   int index = 0;
 
@@ -36,7 +33,15 @@ class _MainWrapperState extends State<MainWrapper> {
     return DoubleTapToExit(
       child: Scaffold(
         body: SafeArea(
-          child: IndexedStack(index: index, children: pages),
+          child: Stack(
+            children: [
+              _buildOffstageNavigator(0),
+              _buildOffstageNavigator(1),
+              _buildOffstageNavigator(2),
+              _buildOffstageNavigator(3),
+              _buildOffstageNavigator(4),
+            ],
+          ),
         ),
         bottomNavigationBar: AnimatedContainer(
           height: 0.1.sh,
@@ -86,6 +91,38 @@ class _MainWrapperState extends State<MainWrapper> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildOffstageNavigator(int tabIndex) {
+    return Offstage(
+      offstage: index != tabIndex,
+      child: Navigator(
+        key: navKeys[tabIndex],
+        onGenerateRoute: (RouteSettings settings) {
+          Widget page;
+
+          switch (tabIndex) {
+            case 0:
+              page = HomeScreen();
+              break;
+            case 1:
+              page = CatsScreen();
+              break;
+            case 2:
+              page = CartScreen();
+              break;
+            case 3:
+              page = BlogScreen();
+              break;
+            case 4:
+            default:
+              page = ProfileScreen();
+          }
+
+          return MaterialPageRoute(builder: (_) => page);
+        },
       ),
     );
   }

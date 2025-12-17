@@ -1,9 +1,9 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:goldooni/core/utils/app_ext.dart';
+import 'package:goldooni/feature/cats/presentation/bloc/cats_bloc.dart';
+import 'package:goldooni/feature/home/presentation/screens/amazing_product_list_screen.dart';
 import 'package:goldooni/feature/home/presentation/widgets/app_search_bar.dart';
 
 import '../../../home/presentation/bloc/home_bloc.dart';
@@ -25,36 +25,51 @@ class CatsScreen extends StatelessWidget {
               AppSearchBar(),
               8.height,
               Expanded(
-                child: BlocBuilder<HomeBloc, HomeState>(                    
+                child: BlocBuilder<HomeBloc, HomeState>(
                   builder: (context, state) {
                     final items = context.read<HomeBloc>().cats;
                     return ListView.builder(
                       itemCount: items.length,
                       itemBuilder: (context, index) {
-                        return Padding(
-                          padding: EdgeInsets.all(8.w),
-                          child: Column(
-                            children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    items[index].title,
-                                    style: context.textTheme.bodyLarge,
-                                  ),
-                                  Icon(
-                                    Icons.keyboard_arrow_left,
-                                    color: colors.onSurface,
-                                  ),
-                                ],
+                        return GestureDetector(
+                          onTap: () {
+                            context.read<CatsBloc>().cats.clear();
+                            context.read<CatsBloc>().getCatsData(
+                              items[index].id,
+                            );
+                            context.navigateRoot(
+                              AmazingProductListScreen(
+                                cats: context.read<CatsBloc>().cats,
                               ),
-                              8.height,
-                              Visibility(
-                                visible: index == items.length - 1 ? false : true,
-                                child: Divider(color: colors.outlineVariant),
-                              ),
-                            ],
+                            );
+                          },
+                          child: Padding(
+                            padding: EdgeInsets.all(8.w),
+                            child: Column(
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      items[index].title,
+                                      style: context.textTheme.bodyLarge,
+                                    ),
+                                    Icon(
+                                      Icons.keyboard_arrow_left,
+                                      color: colors.onSurface,
+                                    ),
+                                  ],
+                                ),
+                                8.height,
+                                Visibility(
+                                  visible: index == items.length - 1
+                                      ? false
+                                      : true,
+                                  child: Divider(color: colors.outlineVariant),
+                                ),
+                              ],
+                            ),
                           ),
                         );
                       },
