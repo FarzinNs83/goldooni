@@ -48,25 +48,32 @@ class DiscountOfferCard extends StatelessWidget {
                 ),
               ),
               16.width,
-              Row(
-                spacing: 4,
-                children: [
-                  OfferTimer(time: '۳۴'),
-                  Text(
-                    ":",
-                    style: textTheme.headlineSmall?.copyWith(
-                      color: colors.onSecondary,
-                    ),
-                  ),
-                  OfferTimer(time: '۳۶'),
-                  Text(
-                    ":",
-                    style: textTheme.headlineSmall?.copyWith(
-                      color: colors.onSecondary,
-                    ),
-                  ),
-                  OfferTimer(time: '۱۲'),
-                ],
+              BlocBuilder<HomeBloc, HomeState>(
+                builder: (context, state) {
+                  if (state is HomeStartTimer) {
+                    return Row(
+                      spacing: 4,
+                      children: [
+                        OfferTimer(offTime: state.seconds),
+                        Text(
+                          ":",
+                          style: textTheme.headlineSmall?.copyWith(
+                            color: colors.onSecondary,
+                          ),
+                        ),
+                        OfferTimer(offTime: state.minutes),
+                        Text(
+                          ":",
+                          style: textTheme.headlineSmall?.copyWith(
+                            color: colors.onSecondary,
+                          ),
+                        ),
+                        OfferTimer(offTime: state.hours),
+                      ],
+                    );
+                  }
+                  return SizedBox.shrink();
+                },
               ),
               Spacer(),
               TextButton.icon(
@@ -77,11 +84,13 @@ class DiscountOfferCard extends StatelessWidget {
                 iconAlignment: IconAlignment.end,
                 onPressed: () {
                   // context.read<HomeBloc>().getMoreAmazProducts();
-                  context.navigateRoot(
-                  AmazingProductListScreen(
-                    amazingProducts: context.read<HomeBloc>().amazMoreProducts,
-                  ),
-                );
+                  context.navigateWNavBar(
+                    AmazingProductListScreen(
+                      amazingProducts: context
+                          .read<HomeBloc>()
+                          .amazMoreProducts,
+                    ),
+                  );
                 },
                 label: Text(
                   'همه',

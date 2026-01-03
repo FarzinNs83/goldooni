@@ -15,7 +15,6 @@ class ProfileBloc extends Cubit<ProfileState> {
   final List<ProfileEntity> profile = [];
   Future<void> loadTheme() async {
     final isDark = SharedPref.instance.getBool("isDarkTheme") ?? false;
-
     emit(state.copyWith(isDark: isDark));
   }
 

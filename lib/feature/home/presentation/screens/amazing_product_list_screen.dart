@@ -120,9 +120,7 @@ class _AmazingProductListScreenState extends State<AmazingProductListScreen> {
           }
           return SizedBox.shrink();
         }
-
         final product = items[index];
-
         return GestureDetector(
           onTap: () => context.navigate(SingleProductScreen(id: product.id)),
           child: Padding(

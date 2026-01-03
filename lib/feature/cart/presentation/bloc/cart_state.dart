@@ -1,17 +1,14 @@
 part of 'cart_bloc.dart';
 
+abstract class CartState {}
 
-class CartState {
-  final List<CartItemEntity> items;
+class CartInitial extends CartState {}
 
-  CartState({required this.items});
+class CartLoading extends CartState {}
 
-  factory CartState.initial() => CartState(items: []);
-
-  CartState copyWith({List<CartItemEntity>? items}) {
-    return CartState(
-      items: items ?? this.items,
-    );
-  }
+class CartSuccess extends CartState {}
+class CartEmpty extends CartState {}
+class CartFailed extends CartState {
+  final Failure failure;
+  CartFailed({required this.failure});
 }
-

@@ -5,6 +5,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:goldooni/core/resources/app_theme.dart';
 import 'package:goldooni/feature/auth/presentation/bloc/auth_bloc.dart';
+import 'package:goldooni/feature/blog/presentation/bloc/blog_bloc.dart';
 import 'package:goldooni/feature/cart/presentation/bloc/cart_bloc.dart';
 import 'package:goldooni/feature/cats/presentation/bloc/cats_bloc.dart';
 import 'package:goldooni/feature/home/presentation/bloc/home_bloc.dart';
@@ -34,6 +35,7 @@ class MainApp extends StatelessWidget {
       builder: (_, _) => MultiBlocProvider(
         providers: [
           BlocProvider<AuthBloc>(create: (context) => di.sl<AuthBloc>()),
+          BlocProvider<BlogBloc>(create: (context) => di.sl<BlogBloc>()),
           BlocProvider<HomeBloc>(create: (context) => di.sl<HomeBloc>()),
           BlocProvider<ProfileBloc>(create: (context) => di.sl<ProfileBloc>()),
           BlocProvider<SplashBloc>(create: (context) => di.sl<SplashBloc>()),

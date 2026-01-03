@@ -18,4 +18,14 @@ class CartRepositoryImpl implements CartRepository {
   Future<Either<Failure, List<CartEntity>>> getCart() {
     return cartRemote.getCart().then((value) => Right(value));
   }
+  
+  @override
+  Future<void> deleteProduct(int productId) {
+    return cartRemote.deleteCart(productId);
+  }
+  
+  @override
+  Future<void> updateProduct(int productId, int quantity) {
+    return cartRemote.updateCart(productId, quantity);
+  }
 }

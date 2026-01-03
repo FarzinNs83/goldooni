@@ -12,6 +12,7 @@ class CatsBloc extends Cubit<CatsState> {
   int page = 1;
   Future<void> getCatsData(int id) async {
     emit(CatsLoading());
+    cats.clear();
     final res = await catsRepository.getCatData(id, 1);
     res.fold((l) => emit(CatsFailed(failure: l)), (r) {
       cats.addAll(r);

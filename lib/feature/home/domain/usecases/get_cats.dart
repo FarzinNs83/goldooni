@@ -10,7 +10,7 @@ class GetCatsUseCase implements UsecaseGlob<List<CatsEntity>, CatsParams> {
   GetCatsUseCase(this.homeRepository);
   @override
   Future<Either<Failure, List<CatsEntity>>> call(CatsParams params) async {
-    return await homeRepository.getCats(params.page);
+    return await homeRepository.getCats();
   }
 }
 

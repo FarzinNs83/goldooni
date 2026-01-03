@@ -12,7 +12,8 @@ class AppTextField extends StatelessWidget {
   final Widget? suffixIcon;
   final bool isObsecure;
   final bool readOnly;
-  AppTextField({
+  final Function(String)? onChanged;
+  const AppTextField({
     super.key,
     required this.hintText,
     required this.ctrl,
@@ -23,11 +24,13 @@ class AppTextField extends StatelessWidget {
     this.nextFocus,
     this.suffixIcon,
     this.readOnly = false, this.isObsecure = false,
+    this.onChanged,
   });
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      onChanged: onChanged,
       obscureText: isObsecure,
       readOnly: readOnly,
       cursorColor: context.theme.colorScheme.primary,

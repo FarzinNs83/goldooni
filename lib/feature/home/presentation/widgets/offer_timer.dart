@@ -1,10 +1,11 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:goldooni/core/utils/app_ext.dart';
 
 class OfferTimer extends StatelessWidget {
-  final String time;
-  const OfferTimer({super.key, required this.time});
+  final String offTime;
+  const OfferTimer({super.key, required this.offTime});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +19,7 @@ class OfferTimer extends StatelessWidget {
       ),
       child: Center(
         child: Text(
-          time,
+          offTime,
           style: context.textTheme.labelMedium?.copyWith(
             color: colors.onSurface,
             letterSpacing: 2,

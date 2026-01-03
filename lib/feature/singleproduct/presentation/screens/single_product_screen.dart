@@ -1,20 +1,16 @@
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:goldooni/core/utils/app_ext.dart';
-import 'package:goldooni/core/utils/json_log.dart';
 import 'package:goldooni/core/widgets/network_image.dart';
 import 'package:goldooni/core/widgets/shimmer_widget.dart';
-import 'package:goldooni/feature/cart/domain/entities/cart_entity.dart';
 import 'package:goldooni/feature/cart/presentation/bloc/cart_bloc.dart';
 import 'package:goldooni/feature/singleproduct/presentation/bloc/single_product_bloc.dart';
 import 'package:goldooni/feature/singleproduct/presentation/widgets/zoom_in_image.dart';
 import 'package:goldooni/gen/assets.gen.dart';
 import '../../../../core/widgets/app_button.dart';
-import '../../../cart/data/models/cart_model.dart';
 
 class SingleProductScreen extends StatefulWidget {
   final int id;
@@ -117,10 +113,21 @@ class _SingleProductScreenState extends State<SingleProductScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  AppButton(
-                    title: "افزودن به سبد خرید",
-                    onPressed: () {
-                      context.read<CartBloc>().addItem(item.id, 1);
+                  BlocBuilder<CartBloc, CartState>(
+                    builder: (context, state) {
+                      final isInCart = context.read<CartBloc>().items.any(
+                        (element) => element.id == item.id,
+                      );
+                      return AppButton(
+                        title:
+                            isInCart
+                            ? 'حذف از سبد خرید'
+                            : "افزودن به سبد خرید",
+                        onPressed: () {
+                          context.read<CartBloc>().addItem(item.id, 1);
+                          context.read<CartBloc>().loadCart();
+                        },
+                      );
                     },
                   ),
                   Column(
@@ -148,37 +155,7 @@ class _SingleProductScreenState extends State<SingleProductScreen> {
                 ],
               ),
             ),
-            appBar: AppBar(
-              surfaceTintColor: Colors.transparent,
-              elevation: 0,
-              title: Row(
-                children: [
-                  Spacer(),
-                  IconButton(
-                    onPressed: () {},
-                    icon: SvgPicture.asset(
-                      height: 24.r,
-                      width: 24.r,
-                      Assets.svg.shoppingCart,
-                      colorFilter: ColorFilter.mode(
-                        colors.onSurface,
-                        BlendMode.srcIn,
-                      ),
-                    ),
-                  ),
-                  IconButton(
-                    onPressed: () {},
-                    icon: SvgPicture.asset(
-                      Assets.svg.solarShareOutline,
-                      colorFilter: ColorFilter.mode(
-                        colors.onSurface,
-                        BlendMode.srcIn,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            appBar: AppBar(surfaceTintColor: Colors.transparent, elevation: 0),
             body: SingleChildScrollView(
               physics: BouncingScrollPhysics(),
               child: Hero(
@@ -234,16 +211,20 @@ class _SingleProductScreenState extends State<SingleProductScreen> {
                                   ),
                                 ),
                                 IconButton(
-                                  onPressed: () {},
-                                  icon: SvgPicture.asset(
-                                    Assets.svg.mynauiHeart,
-                                    height: 28.r,
-                                    width: 28.r,
-                                    colorFilter: ColorFilter.mode(
-                                      colors.primary,
-                                      BlendMode.srcIn,
-                                    ),
-                                  ),
+                                  onPressed: () {
+                                    context
+                                        .read<SingleProductBloc>()
+                                        .toggleFavorite(item);
+                                  },
+                                  icon: state.favorites.contains(item)
+                                      ? Icon(Icons.favorite, color: Colors.red)
+                                      : SvgPicture.asset(
+                                          Assets.svg.mynauiHeart,
+                                          colorFilter: ColorFilter.mode(
+                                            colors.primary,
+                                            BlendMode.srcIn,
+                                          ),
+                                        ),
                                 ),
                               ],
                             ),

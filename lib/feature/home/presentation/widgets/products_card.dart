@@ -51,7 +51,7 @@ class ProductsCard extends StatelessWidget {
                 icon: Icon(Icons.keyboard_arrow_left, color: colors.secondary),
                 iconAlignment: IconAlignment.end,
                 onPressed: () {
-                  context.navigateRoot(
+                  context.navigateWNavBar(
                     ProductsListScreen(newProducts, topProducts),
                   );
                 },

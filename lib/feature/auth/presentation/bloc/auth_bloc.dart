@@ -84,10 +84,12 @@ class AuthBloc extends Cubit<AuthState> {
       }
     });
   }
- void cancelTimer() {
+
+  void cancelTimer() {
     _timer?.cancel();
     _start = 120;
- }
+  }
+
   String formatTimer(int time) {
     var duration = Duration(seconds: time);
     String twoDigits(int n) => n.toString().padLeft(2, "0");
@@ -98,5 +100,17 @@ class AuthBloc extends Cubit<AuthState> {
       duration.inSeconds.remainder(60),
     ).toPersianNumber();
     return "$twoDigitMinutes:$twoDigitSeconds";
+  }
+
+  ({String hours, String minutes, String seconds}) formatTimerParts(int time) {
+    final duration = Duration(seconds: time);
+
+    String twoDigits(int n) => n.toString().padLeft(2, "0");
+
+    return (
+      hours: twoDigits(duration.inHours.remainder(60)).toPersianNumber(),
+      minutes: twoDigits(duration.inMinutes.remainder(60)).toPersianNumber(),
+      seconds: twoDigits(duration.inSeconds.remainder(60)).toPersianNumber(),
+    );
   }
 }

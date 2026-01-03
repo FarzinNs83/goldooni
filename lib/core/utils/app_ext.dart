@@ -19,6 +19,7 @@ extension Navigate on BuildContext {
     return Navigator.push(
       this,
       PageRouteBuilder(
+        settings: RouteSettings(arguments: {'hideNavBar': true}),
         pageBuilder: (context, animation, _) {
           return SlideTransition(
             position: animation.drive(
@@ -34,9 +35,10 @@ extension Navigate on BuildContext {
     );
   }
 
-  Future<dynamic> navigateRoot(Widget page) {
-    return Navigator.of(this, rootNavigator: false).push(
+  Future<dynamic> navigateWNavBar(Widget page) {
+    return Navigator.of(this).push(
       PageRouteBuilder(
+        settings: RouteSettings(arguments: {'hideNavBar': false}),
         pageBuilder: (context, animation, _) {
           return SlideTransition(
             position: animation.drive(
@@ -56,6 +58,7 @@ extension Navigate on BuildContext {
     return Navigator.pushReplacement(
       this,
       PageRouteBuilder(
+        settings: RouteSettings(arguments: {'hideNavBar': true}),
         pageBuilder: (context, animation, _) {
           return SlideTransition(
             position: animation.drive(
@@ -73,17 +76,26 @@ extension Navigate on BuildContext {
 }
 
 extension PersianNumbers on String {
-  String toPersianNumber() {
-    const english = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
-    const persian = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
+  static const _persian = ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'];
+  static const _english = ['0','1','2','3','4','5','6','7','8','9'];
 
+  String toEnglishNumber() {
     var result = this;
-    for (var i = 0; i < english.length; i++) {
-      result = result.replaceAll(english[i], persian[i]);
+    for (int i = 0; i < 10; i++) {
+      result = result.replaceAll(_persian[i], _english[i]);
+    }
+    return result;
+  }
+
+  String toPersianNumber() {
+    var result = this;
+    for (int i = 0; i < 10; i++) {
+      result = result.replaceAll(_english[i], _persian[i]);
     }
     return result;
   }
 }
+
 
 extension Comma on num {
   String get comma =>

@@ -9,13 +9,24 @@ class SingleProductBloc extends Cubit<SingleProductState> {
   SingleProductBloc(this._singleProductRepository)
     : super(SingleProductInitial());
   final List<SingleProductEntity> singleProduct = [];
+  final List<SingleProductEntity> _favorites = [];
   Future<void> getSingleProduct(int id) async {
     singleProduct.clear();
     emit(SingleProductLoading());
     final result = await _singleProductRepository.getSingleProduct(id);
     result.fold((l) => emit(SingleProductError(failure: l)), (r) {
-      emit(SingleProductLoaded());
       singleProduct.addAll(r);
+      emit(SingleProductLoaded(favorites: List.from(_favorites)));
     });
   }
+
+  void toggleFavorite(SingleProductEntity item) {
+    if (_favorites.contains(item)) {
+      _favorites.remove(item);
+    } else {
+      _favorites.add(item);
+    }
+    emit(SingleProductLoaded(favorites: List.from(_favorites)));
+  }
+
 }

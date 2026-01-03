@@ -9,6 +9,8 @@ import '../../../../core/utils/shared_pref_manager.dart';
 
 abstract class CartRemote {
   Future<void> postCart(int productId, int quantity);
+  Future<void> updateCart(int productId, int quantity);
+  Future<void> deleteCart(int productId);
   Future<List<CartModel>> getCart();
 }
 
@@ -54,7 +56,6 @@ class CartRemoteImpl implements CartRemote {
         ),
       );
       if (res.statusCode == 200) {
-        log(res.data.toString());
         return (res.data['results'] as List)
             .map((e) => CartModel.fromJson(e))
             .toList();
@@ -66,5 +67,51 @@ class CartRemoteImpl implements CartRemote {
       );
       throw ServerExc(message: e.message.toString());
     }
+  }  @override
+  Future<void> deleteCart(int productId) async {
+    try {
+      final res = await _dio.delete(
+        "${ApiConstants.deleteCart}$productId/",
+        options: Options(
+          headers: {
+            "Authorization": "Bearer ${SharedPref.instance.getString('token')}",
+          },
+        ),
+      );
+      if (res.statusCode == 204) {
+        return log("Deleted Successfully");
+      }
+      throw ServerExc(message: res.statusMessage.toString());
+    } on DioException catch (e) {
+      log(
+        'DioException with Response: ${e.response?.statusCode} - ${e.response?.data}',
+      );
+      throw ServerExc(message: e.message.toString());
+    }
+  }
+
+  @override
+  Future<void> updateCart(int productId, int quantity) async {
+    try {
+      final res = await _dio.patch(
+        "${ApiConstants.patchCart}$productId/",
+        data: {"quantity": quantity},
+        options: Options(
+          headers: {
+            "Authorization": "Bearer ${SharedPref.instance.getString('token')}",
+          },
+        ),
+      );
+      if (res.statusCode == 200) {
+        return res.data;
+      }
+      throw ServerExc(message: res.statusMessage.toString());
+    } on DioException catch (e) {
+      log(
+        'DioException with Response: ${e.response?.statusCode} - ${e.response?.data}',
+      );
+      throw ServerExc(message: e.message.toString());
+    }
+    
   }
 }

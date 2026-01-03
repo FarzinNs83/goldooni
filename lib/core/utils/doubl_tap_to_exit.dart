@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_styled_toast/flutter_styled_toast.dart';
+import 'package:goldooni/core/widgets/show_toast.dart';
 
 class DoubleTapToExit extends StatefulWidget {
   final Widget child;
@@ -25,17 +25,7 @@ class _DoubleTapToExitState extends State<DoubleTapToExit> {
             now.difference(currentBackPressTime!) >
                 const Duration(seconds: 2)) {
           currentBackPressTime = now;
-          showToast(
-            'برای خروج دوباره کلیک کنید',
-            context: context,
-            animation: StyledToastAnimation.scale,
-            reverseAnimation: StyledToastAnimation.fade,
-            position: StyledToastPosition.bottom,
-            animDuration: Duration(seconds: 1),
-            duration: Duration(seconds: 4),
-            curve: Curves.elasticOut,
-            reverseCurve: Curves.linear,
-          );
+          ShowToast().show('برای خروج دوبار کلیک کنید', context);
           return;
         }
         await SystemNavigator.pop();

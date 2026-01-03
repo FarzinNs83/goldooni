@@ -27,11 +27,11 @@ class SplashBloc extends Cubit<SplashState> {
         jsonLog(res.data);
       }
     } on DioException catch (e) {
+      await _validateRefreshToken();
+      await validateAccessToken();
       log(e.response!.statusCode.toString());
       log("${e.response?.data}");
       emit(SplashAccessFailure());
-      await _validateRefreshToken();
-      await validateAccessToken();
     }
   }
 

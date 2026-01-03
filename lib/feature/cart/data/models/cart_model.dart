@@ -12,7 +12,7 @@ class CartModel extends CartEntity {
   factory CartModel.fromJson(Map<String, dynamic> json) {
     return CartModel(
       id: json['id'],
-      totalPrice: json['total_price'],
+      totalPrice: json['total_price'] ?? 0,
       items: (json['items'] as List)
           .map((e) => CartItemModel.fromJson(e))
           .toList(),

@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:goldooni/core/utils/app_ext.dart';
@@ -9,6 +10,7 @@ import 'package:goldooni/core/utils/unfocus.dart';
 import 'package:goldooni/core/widgets/app_text_field.dart';
 import 'package:goldooni/core/widgets/app_button.dart';
 import 'package:goldooni/feature/auth/presentation/widgets/drop_down_form.dart';
+import 'package:goldooni/feature/home/presentation/bloc/home_bloc.dart';
 import 'package:goldooni/main_wrapper.dart';
 
 import '../../../../gen/assets.gen.dart';
@@ -55,6 +57,7 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
   final lonFn = FocusNode();
   @override
   void initState() {
+    context.read<HomeBloc>().determinePosition();
     phoneNumCtrl = TextEditingController(text: widget.phone);
     super.initState();
   }
@@ -90,10 +93,7 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
               child: Column(
                 children: [
                   40.height,
-                  SvgPicture.asset(
-                    Assets.svg.logoSec,
-                    height: 0.1.sh,
-                  ),
+                  SvgPicture.asset(Assets.svg.logoSec, height: 0.1.sh),
                   40.height,
                   TextFieldLable(title: "نام و نام‌خانوادگی"),
                   8.height,
@@ -210,10 +210,41 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                   8.height,
                   AppTextField(
                     hintText: "برای انتخاب موقعیت مکانی کلیک کنید",
-                    ctrl: latCtrl,
+                    ctrl: TextEditingController.fromValue(
+                      TextEditingValue(
+                        text:
+                            "${latCtrl.text}, ${lonCtrl.text}",
+                      ),
+                    ),
                     focusNode: latFn,
                     suffixIcon: GestureDetector(
-                      onTap: () {},
+                      onTap: () async {
+                        await showSimplePickerLocation(
+                          contentPadding: EdgeInsets.all(8),
+                          context: context,
+                          isDismissible: true,
+                          title: "انتخاب موقعیت مکانی",
+                          textCancelPicker: "لغو",
+                          textConfirmPicker: "انتخاب",
+                          zoomOption: const ZoomOption(
+                            initZoom: 14,
+                            minZoomLevel: 6,
+                            maxZoomLevel: 19,
+                          ),
+                          initPosition: GeoPoint(
+                            latitude: context.read<HomeBloc>().lat,
+                            longitude: context.read<HomeBloc>().lon,
+                          ),
+                          radius: 8.0,
+                        ).then((value) {
+                          if (value != null) {
+                            setState(() {
+                              latCtrl.text = value.latitude.toString();
+                            lonCtrl.text = value.longitude.toString();
+                            });
+                          }
+                        });
+                      },
                       child: Padding(
                         padding: EdgeInsets.all(8.0),
                         child: SvgPicture.asset(Assets.svg.location),
@@ -245,8 +276,8 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                                 "$year-${month.toString().padLeft(2, '0')}-${day.toString().padLeft(2, '0')}",
                             phoneNum: phoneNumCtrl.text,
                             codeMeli: codeMeliCtrl.text,
-                            lat: "36.0757",
-                            lon: "53.5309",
+                            lat: latCtrl.text,
+                            lon: lonCtrl.text,
                             pw: pwCtrl.text,
                           ),
                         ),

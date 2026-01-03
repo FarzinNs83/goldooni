@@ -75,6 +75,17 @@ class _SendSmsScreenState extends State<SendSmsScreen> {
                           ),
                           26.height,
                           AppTextField(
+                            onChanged: (value) {
+                              final persianNum = value.toPersianNumber();
+                              if (persianNum != value) {
+                                phoneNumber.value = phoneNumber.value.copyWith(
+                                  text: persianNum,
+                                  selection: TextSelection.collapsed(
+                                    offset: persianNum.length,
+                                  ),
+                                );
+                              }
+                            },
                             hintText: "۰۹۰۲۷۵۸۵۵۴۲",
                             ctrl: phoneNumber,
                             txtDir: TextDirection.rtl,
@@ -87,7 +98,7 @@ class _SendSmsScreenState extends State<SendSmsScreen> {
                             listener: (context, state) {
                               if (state is AuthSendSms) {
                                 context.navigate(
-                                  VerifyOtpScreen(phone: phoneNumber.text),
+                                  VerifyOtpScreen(phone: phoneNumber.text.toEnglishNumber()),
                                 );
                               }
                               if (state is AuthError) {
@@ -115,7 +126,7 @@ class _SendSmsScreenState extends State<SendSmsScreen> {
                                   title: 'ورود',
                                   onPressed: () {
                                     context.read<AuthBloc>().sendSms(
-                                      phoneNum: phoneNumber.text,
+                                      phoneNum: phoneNumber.text.toEnglishNumber(),
                                     );
                                     context.read<AuthBloc>().startTimer();
                                   },

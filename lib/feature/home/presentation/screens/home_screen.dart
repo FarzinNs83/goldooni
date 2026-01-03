@@ -1,14 +1,13 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:goldooni/core/utils/app_ext.dart';
-import 'package:goldooni/feature/home/presentation/bloc/home_bloc.dart';
+import 'package:goldooni/core/widgets/show_toast.dart';
+import 'package:goldooni/export_pkg.dart';
 import 'package:goldooni/feature/home/presentation/widgets/app_search_bar.dart';
 import 'package:goldooni/feature/home/presentation/widgets/auth_icon_button.dart';
+import 'package:goldooni/feature/home/presentation/widgets/image_slider.dart';
 import 'package:goldooni/feature/home/presentation/widgets/products_card.dart';
-import 'package:goldooni/gen/assets.gen.dart';
-
 import '../widgets/discount_offer_card.dart';
 import '../widgets/home_screen_cats.dart';
 
@@ -27,13 +26,29 @@ class _HomeScreenState extends State<HomeScreen> {
       context.read<HomeBloc>().getAmazProducts();
       context.read<HomeBloc>().getNewProducts();
       context.read<HomeBloc>().getTopProducts();
+      context.read<HomeBloc>().getSlider();
+      context.read<HomeBloc>().startTimer();
     });
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     final safeTop = MediaQuery.paddingOf(context).top;
     return Scaffold(
+      floatingActionButton: Padding(
+        padding: EdgeInsets.only(right: 30.w),
+        child: Align(
+          alignment: Alignment.bottomRight,
+          child: FloatingActionButton(
+            onPressed: () => ShowToast().show(
+                "برای پشتیبانی با شماره 09123456789 تماس بگیرید", context),
+            backgroundColor: context.colors.primary,
+            shape: CircleBorder(),
+            child: Icon(Icons.support_agent, color: Colors.white),
+          ),
+        ),
+      ),
       body: Padding(
         padding: EdgeInsets.only(top: safeTop + 16.h),
         child: Center(
@@ -43,25 +58,12 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16.w),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      SizedBox(
-                        height: 0.07.sh,
-                        width: 0.73.sw,
-                        child: AppSearchBar(),
-                      ),
-                      AuthIconButton(),
-                    ],
-                  ),
+                  child:AppSearchBar(),
                 ),
                 16.height,
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16.w),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(12.r),
-                    child: Image.asset(Assets.png.golCar.path),
-                  ),
+                  child: ImageSlider(),
                 ),
                 16.height,
                 Padding(
@@ -70,14 +72,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 8.height,
                 DiscountOfferCard(),
-                16.height,
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16.w),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(12.r),
-                    child: Image.asset(Assets.png.golCar.path),
-                  ),
-                ),
                 16.height,
                 ProductsCard(
                   title: "محصولات برتر",

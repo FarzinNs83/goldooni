@@ -5,30 +5,25 @@ import '../../../../core/resources/api_constants.dart';
 import '../models/cats_model.dart';
 
 abstract class CatsRemote {
-  Future<List<CatsModel>> getHomeData(int page);
+  Future<List<CatsModel>> getHomeData();
 }
 
 class CatsRemoteImpl implements CatsRemote {
   final Dio dio;
   CatsRemoteImpl(this.dio);
   @override
-  Future<List<CatsModel>> getHomeData(int page) async {
-    page = 1;
+  Future<List<CatsModel>> getHomeData() async {
     try {
-      final res = await dio.get('${ApiConstants.cats}$page');
-      if (res.data['next'] != null) {
+      final res = await dio.get(ApiConstants.cats);   
         if (res.statusCode == 200) {
-          
-          return (res.data['results'] as List)
+          return (res.data as List)
     .map((e) => CatsModel.fromJson(e))
     .toList();
 
         } else {
           throw ServerExc(message: res.statusMessage.toString());
         }
-      } else {
-        throw ServerExc(message: "No more data");
-      }
+      
     } on DioException catch (e) {
       throw ServerExc(
         message:

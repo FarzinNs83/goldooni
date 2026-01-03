@@ -37,7 +37,7 @@ class CatsScreen extends StatelessWidget {
                             context.read<CatsBloc>().getCatsData(
                               items[index].id,
                             );
-                            context.navigateRoot(
+                            context.navigateWNavBar(
                               AmazingProductListScreen(
                                 cats: context.read<CatsBloc>().cats,
                               ),

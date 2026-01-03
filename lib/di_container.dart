@@ -1,40 +1,8 @@
-import 'package:dio/dio.dart';
-import 'package:get_it/get_it.dart';
-import 'package:goldooni/core/utils/shared_pref_manager.dart';
-import 'package:goldooni/feature/auth/data/repositories/auth_repository_impl.dart';
-import 'package:goldooni/feature/auth/domain/repositories/auth_repository.dart';
-import 'package:goldooni/feature/auth/domain/usecases/register_form_usecase.dart';
-import 'package:goldooni/feature/auth/domain/usecases/send_sms_usecase.dart';
-import 'package:goldooni/feature/auth/domain/usecases/verify_otp_usecase.dart';
-import 'package:goldooni/feature/auth/presentation/bloc/auth_bloc.dart';
-import 'package:goldooni/feature/cart/data/datasources/cart_remote.dart';
-import 'package:goldooni/feature/cart/domain/repositories/cart_repository.dart';
-import 'package:goldooni/feature/cart/presentation/bloc/cart_bloc.dart';
-import 'package:goldooni/feature/cats/data/datasources/cats_remote.dart';
-import 'package:goldooni/feature/cats/data/repositories/cats_repository_impl.dart';
-import 'package:goldooni/feature/cats/domain/repositories/cats_repository.dart';
-import 'package:goldooni/feature/cats/presentation/bloc/cats_bloc.dart';
-import 'package:goldooni/feature/home/data/datasources/amazing_products_remote.dart';
-import 'package:goldooni/feature/home/data/datasources/cats_remote.dart';
-import 'package:goldooni/feature/home/data/datasources/new_products_remote.dart';
-import 'package:goldooni/feature/home/data/datasources/top_products_remote.dart';
-import 'package:goldooni/feature/home/data/repositories/home_repository_impl.dart';
-import 'package:goldooni/feature/home/domain/repositories/home_repository.dart';
-import 'package:goldooni/feature/home/domain/usecases/get_amaz_products.dart';
-import 'package:goldooni/feature/home/domain/usecases/get_cats.dart';
-import 'package:goldooni/feature/home/presentation/bloc/home_bloc.dart';
-import 'package:goldooni/feature/profile/data/datasources/profile_remote.dart';
-import 'package:goldooni/feature/profile/data/repositories/profile_repository_impl.dart';
-import 'package:goldooni/feature/profile/domain/repositories/profile_repository.dart';
-import 'package:goldooni/feature/profile/presentation/bloc/profile_bloc.dart';
-import 'package:goldooni/feature/singleproduct/data/datasources/single_product_remote.dart';
-import 'package:goldooni/feature/singleproduct/data/repositories/single_product_repository_impl.dart';
-import 'package:goldooni/feature/singleproduct/domain/repositories/single_product_repository.dart';
-import 'package:goldooni/feature/singleproduct/presentation/bloc/single_product_bloc.dart';
-import 'package:goldooni/feature/splash/presentation/bloc/splash_bloc.dart';
-
-import 'feature/auth/data/datasources/auth_data_source.dart';
-import 'feature/cart/data/repositories/cart_repository_impl.dart';
+import 'package:goldooni/export_pkg.dart';
+import 'package:goldooni/feature/blog/data/remote/blog_remote.dart';
+import 'package:goldooni/feature/blog/data/repositories/blog_repository_impl.dart';
+import 'package:goldooni/feature/blog/domain/repositories/blog_repository.dart';
+import 'package:goldooni/feature/blog/presentation/bloc/blog_bloc.dart';
 
 final sl = GetIt.instance;
 
@@ -63,14 +31,20 @@ Future<void> init() async {
     () => TopProductsRemoteImpl(sl<Dio>()),
   );
   sl.registerLazySingleton<ProfileRemote>(() => ProfileRemoteImpl(sl<Dio>()));
+  sl.registerLazySingleton<BlogRemote>(() => BlogRemoteImpl(sl<Dio>()));
   sl.registerLazySingleton<SingleProductRemote>(
     () => SingleProductRemoteImpl(sl<Dio>()),
   );
   sl.registerLazySingleton<CatsDataRemote>(() => CatsDataRemoteImpl(sl<Dio>()));
   sl.registerLazySingleton<CartRemote>(() => CartRemoteImpl(sl<Dio>()));
+  sl.registerLazySingleton<SliderRemote>(() => SliderRemoteImpl(sl<Dio>()));
+  sl.registerLazySingleton<SearchRemote>(() => SearchRemoteImpl(sl<Dio>()));
   //For repo
   sl.registerLazySingleton<AuthRepository>(
     () => AuthRepositoryImpl(dataSource: sl()),
+  );
+  sl.registerLazySingleton<BlogRepository>(
+    () => BlogRepositoryImpl(sl()),
   );
   sl.registerLazySingleton<ProfileRepository>(
     () => ProfileRepositoryImpl(sl()),
@@ -79,7 +53,7 @@ Future<void> init() async {
     () => SingleproductRepositoryImpl(sl()),
   );
   sl.registerLazySingleton<HomeRepository>(
-    () => HomeRepositoryImpl(sl(), sl(), sl(), sl()),
+    () => HomeRepositoryImpl(sl(), sl(), sl(), sl(),sl(),sl()),
   );
   sl.registerLazySingleton<CatsRepository>(() => CatsRepositoryImpl(sl()));
   sl.registerLazySingleton<CartRepository>(() => CartRepositoryImpl(sl()));
@@ -103,4 +77,5 @@ Future<void> init() async {
   sl.registerFactory(() => SingleProductBloc(sl()));
   sl.registerFactory(() => CatsBloc(sl()));
   sl.registerFactory(() => CartBloc(sl()));
+  sl.registerFactory(() => BlogBloc(sl()));
 }
