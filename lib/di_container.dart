@@ -3,6 +3,11 @@ import 'package:goldooni/feature/blog/data/remote/blog_remote.dart';
 import 'package:goldooni/feature/blog/data/repositories/blog_repository_impl.dart';
 import 'package:goldooni/feature/blog/domain/repositories/blog_repository.dart';
 import 'package:goldooni/feature/blog/presentation/bloc/blog_bloc.dart';
+import 'package:goldooni/feature/blog_single/data/remote/blog_remote.dart';
+
+import 'feature/blog_single/data/repositories/blog_repository_impl.dart';
+import 'feature/blog_single/domain/repositories/blog_repository.dart';
+import 'feature/blog_single/presentation/bloc/blog_bloc.dart';
 
 final sl = GetIt.instance;
 
@@ -32,6 +37,7 @@ Future<void> init() async {
   );
   sl.registerLazySingleton<ProfileRemote>(() => ProfileRemoteImpl(sl<Dio>()));
   sl.registerLazySingleton<BlogRemote>(() => BlogRemoteImpl(sl<Dio>()));
+  sl.registerLazySingleton<BlogDetailRemote>(() => BlogDetailRemoteImpl(sl<Dio>()));
   sl.registerLazySingleton<SingleProductRemote>(
     () => SingleProductRemoteImpl(sl<Dio>()),
   );
@@ -45,6 +51,9 @@ Future<void> init() async {
   );
   sl.registerLazySingleton<BlogRepository>(
     () => BlogRepositoryImpl(sl()),
+  );
+  sl.registerLazySingleton<BlogDetailRepository>(
+    () => BlogDetailRepositoryImpl(sl()),
   );
   sl.registerLazySingleton<ProfileRepository>(
     () => ProfileRepositoryImpl(sl()),
@@ -78,4 +87,5 @@ Future<void> init() async {
   sl.registerFactory(() => CatsBloc(sl()));
   sl.registerFactory(() => CartBloc(sl()));
   sl.registerFactory(() => BlogBloc(sl()));
+  sl.registerFactory(() => BlogDetailBloc(sl()));
 }

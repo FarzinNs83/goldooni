@@ -64,7 +64,7 @@ class _AmazingProductListScreenState extends State<AmazingProductListScreen> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 SvgPicture.asset(
-                  Assets.svg.discount,
+                  Assets.svg.logoMini,
                   height: 28.r,
                   width: 28.r,
                   colorFilter: ColorFilter.mode(
@@ -74,7 +74,7 @@ class _AmazingProductListScreenState extends State<AmazingProductListScreen> {
                 ),
                 8.width,
                 Text(
-                  "شگفت‌انگیز",
+                  "محصولات",
                   style: context.textTheme.headlineSmall?.copyWith(
                     color: context.colors.primary,
                   ),

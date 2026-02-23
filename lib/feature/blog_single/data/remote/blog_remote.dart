@@ -3,25 +3,23 @@ import 'dart:developer';
 import 'package:goldooni/core/errors/server_exc.dart';
 import 'package:goldooni/core/resources/api_constants.dart';
 import 'package:goldooni/export_pkg.dart';
-import 'package:goldooni/feature/blog/data/models/blog_model.dart';
 
+import '../models/blog_model.dart';
 
-abstract class BlogRemote {
-  Future<List<BlogModel>> getBlogs();
+abstract class BlogDetailRemote {
+  Future<BlogDetailModel> getBlogDetail(int id);
 }
 
-class BlogRemoteImpl implements BlogRemote {
+class BlogDetailRemoteImpl implements BlogDetailRemote {
   final Dio _dio;
 
-  BlogRemoteImpl(this._dio);
+  BlogDetailRemoteImpl(this._dio);
   @override
-  Future<List<BlogModel>> getBlogs() async {
+  Future<BlogDetailModel> getBlogDetail(int id) async {
     try {
-      final res = await _dio.get(ApiConstants.blog);
+      final res = await _dio.get("${ApiConstants.blogDetails}$id/");
       if (res.statusCode == 200) {
-        return (res.data['results'] as List)
-            .map((e) => BlogModel.fromJson(e))
-            .toList();
+        return BlogDetailModel.fromJson(res.data);
       }
       throw ServerExc(message: res.statusMessage.toString());
     } on DioException catch (e) {

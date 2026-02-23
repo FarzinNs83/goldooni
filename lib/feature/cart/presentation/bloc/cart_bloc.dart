@@ -1,4 +1,3 @@
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:goldooni/core/errors/failure.dart';
 import 'package:goldooni/feature/cart/domain/repositories/cart_repository.dart';
@@ -9,42 +8,142 @@ part 'cart_state.dart';
 class CartBloc extends Cubit<CartState> {
   final CartRepository cartRepository;
 
-  CartBloc(this.cartRepository) : super(CartInitial());
-  final List<CartEntity> items = [];
+  CartBloc(this.cartRepository) : super(CartState.initial());
 
-Future<void> loadCart() async {
-  emit(CartLoading());
-  final result = await cartRepository.getCart();
-  result.fold(
-    (l) => emit(CartFailed(failure: Failure(l.toString()))),
-    (r) {
-      items.clear();
-      items.addAll(r);
-            if (items.isEmpty) {
-        emit(CartEmpty());
-      } else {
-        emit(CartSuccess());
-      }
-    },
-  );
-}
+  List<CartEntity> get items => state.carts;
+
+  Future<void> loadCart({bool showLoading = true}) async {
+    if (showLoading) {
+      emit(state.copyWith(status: CartStatus.loading, clearActiveItemId: true));
+    }
+    final result = await cartRepository.getCart();
+    result.fold(
+      (l) => emit(
+        state.copyWith(
+          status: CartStatus.failure,
+          failure: Failure(l.toString()),
+          isMutating: false,
+          clearActiveItemId: true,
+        ),
+      ),
+      (r) => emit(
+        state.copyWith(
+          status: r.isEmpty ? CartStatus.empty : CartStatus.success,
+          carts: r,
+          isMutating: false,
+          clearActiveItemId: true,
+        ),
+      ),
+    );
+  }
 
   Future<void> addItem(int productId, int quantity) async {
-    await cartRepository.postProduct(productId, quantity);
-    await loadCart();
+    emit(state.copyWith(isMutating: true, clearActiveItemId: true));
+    try {
+      await cartRepository.postProduct(productId, quantity);
+      await loadCart(showLoading: false);
+    } catch (e) {
+      emit(
+        state.copyWith(
+          status: CartStatus.failure,
+          failure: Failure(e.toString()),
+          isMutating: false,
+          clearActiveItemId: true,
+        ),
+      );
+    }
   }
 
   Future<void> updateItem(int productId, int quantity) async {
-    emit(CartLoading());
-    await cartRepository.updateProduct(productId, quantity);
-    await loadCart();
-    emit(CartSuccess());
+    if (quantity <= 0) {
+      await deleteItem(productId);
+      return;
+    }
+    emit(state.copyWith(isMutating: true, activeItemId: productId));
+    try {
+      await cartRepository.updateProduct(productId, quantity);
+      final updatedCart = _updateLocalItemQuantity(productId, quantity);
+      emit(
+        state.copyWith(
+          status: updatedCart.items.isEmpty
+              ? CartStatus.empty
+              : CartStatus.success,
+          carts: [updatedCart],
+          isMutating: false,
+          clearActiveItemId: true,
+        ),
+      );
+    } catch (e) {
+      emit(
+        state.copyWith(
+          status: CartStatus.failure,
+          failure: Failure(e.toString()),
+          isMutating: false,
+          clearActiveItemId: true,
+        ),
+      );
+    }
   }
 
   Future<void> deleteItem(int productId) async {
-    emit(CartLoading());
-    await cartRepository.deleteProduct(productId);
-    await loadCart();
-    emit(CartSuccess());
+    emit(state.copyWith(isMutating: true, activeItemId: productId));
+    try {
+      await cartRepository.deleteProduct(productId);
+      final updatedCart = _deleteLocalItem(productId);
+      emit(
+        state.copyWith(
+          status: updatedCart.items.isEmpty
+              ? CartStatus.empty
+              : CartStatus.success,
+          carts: [updatedCart],
+          isMutating: false,
+          clearActiveItemId: true,
+        ),
+      );
+    } catch (e) {
+      emit(
+        state.copyWith(
+          status: CartStatus.failure,
+          failure: Failure(e.toString()),
+          isMutating: false,
+          clearActiveItemId: true,
+        ),
+      );
+    }
+  }
+
+  CartEntity _updateLocalItemQuantity(int cartItemId, int quantity) {
+    final cart = state.carts.first;
+    final updatedItems = cart.items.map((item) {
+      if (item.id != cartItemId) {
+        return item;
+      }
+      return CartItemEntity(
+        id: item.id,
+        product: item.product,
+        totalPrice: item.product.finalPrice * quantity,
+        quantity: quantity,
+      );
+    }).toList();
+    return _copyCartWithItems(cart, updatedItems);
+  }
+
+  CartEntity _deleteLocalItem(int cartItemId) {
+    final cart = state.carts.first;
+    final updatedItems = cart.items
+        .where((item) => item.id != cartItemId)
+        .toList();
+    return _copyCartWithItems(cart, updatedItems);
+  }
+
+  CartEntity _copyCartWithItems(CartEntity cart, List<CartItemEntity> items) {
+    final totalPrice = items.fold<int>(0, (sum, item) => sum + item.totalPrice);
+    return CartEntity(
+      id: cart.id,
+      totalPrice: totalPrice,
+      items: items,
+      createdAt: cart.createdAt,
+      user: cart.user,
+    );
   }
 }

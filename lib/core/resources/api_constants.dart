@@ -20,5 +20,6 @@ class ApiConstants {
   static const String searchByName = '$baseUrl/products/search/?q=';
   static const String searchByCategory = '$baseUrl/products/search_category/?q=';
   static const String blog = '$baseUrl/blog/list_article/?page=1';
+  static const String blogDetails = '$baseUrl/blog/detail_article/';
 
 }

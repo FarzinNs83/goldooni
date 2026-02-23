@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:goldooni/core/widgets/network_image.dart';
 import 'package:goldooni/feature/blog/presentation/bloc/blog_bloc.dart';
+import 'package:goldooni/feature/blog_single/presentation/screens/blog_detail_screen.dart';
 
 import '../../../../core/utils/app_ext.dart';
 import '../../../../gen/assets.gen.dart';
@@ -52,30 +53,33 @@ class BlogScreen extends StatelessWidget {
                     itemBuilder: (context, index) {
                       final blog = state.blog[index];
 
-                      return ListTile(
-                        leading: NetWorkImage(
-                          image: blog.image,
-                          height: 120.h,
-                          width: 120.w,
-                        ),
-                        title: Text(
-                          blog.title,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
+                      return GestureDetector(
+                        onTap: () =>  context.navigate(BlogDetailScreen(id: state.blog[index].id)),
+                        child: ListTile(
+                          leading: NetWorkImage(
+                            image: blog.image,
+                            height: 120.h,
+                            width: 120.w,
+                          ),
+                          title: Text(
+                            blog.title,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
 
-                        subtitle: Text(
-                          "فرزین نصیری",
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
+                          subtitle: Text(
+                            blog.author,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
 
-                        trailing: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text('👍 ${blog.like}'),
-                            Text('👎 ${blog.dislike}'),
-                          ],
+                          // trailing: Column(
+                          //   mainAxisAlignment: MainAxisAlignment.center,
+                          //   children: [
+                          //     Text('👍 ${blog.like}'),
+                          //     Text('👎 ${blog.dislike}'),
+                          //   ],
+                          // ),
                         ),
                       );
                     },

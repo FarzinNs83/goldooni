@@ -1,14 +1,48 @@
 part of 'cart_bloc.dart';
 
-abstract class CartState {}
+enum CartStatus { initial, loading, success, empty, failure }
 
-class CartInitial extends CartState {}
-
-class CartLoading extends CartState {}
-
-class CartSuccess extends CartState {}
-class CartEmpty extends CartState {}
-class CartFailed extends CartState {
+class CartState {
+  final CartStatus status;
+  final List<CartEntity> carts;
   final Failure failure;
-  CartFailed({required this.failure});
+  final bool isMutating;
+  final int? activeItemId;
+
+  const CartState({
+    required this.status,
+    required this.carts,
+    required this.failure,
+    required this.isMutating,
+    required this.activeItemId,
+  });
+
+  factory CartState.initial() {
+    return CartState(
+      status: CartStatus.initial,
+      carts: const [],
+      failure: Failure(""),
+      isMutating: false,
+      activeItemId: null,
+    );
+  }
+
+  CartState copyWith({
+    CartStatus? status,
+    List<CartEntity>? carts,
+    Failure? failure,
+    bool? isMutating,
+    int? activeItemId,
+    bool clearActiveItemId = false,
+  }) {
+    return CartState(
+      status: status ?? this.status,
+      carts: carts ?? this.carts,
+      failure: failure ?? this.failure,
+      isMutating: isMutating ?? this.isMutating,
+      activeItemId: clearActiveItemId
+          ? null
+          : (activeItemId ?? this.activeItemId),
+    );
+  }
 }

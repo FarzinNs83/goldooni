@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -23,6 +22,10 @@ class _SingleProductScreenState extends State<SingleProductScreen> {
   @override
   void initState() {
     context.read<SingleProductBloc>().getSingleProduct(widget.id);
+    final cartBloc = context.read<CartBloc>();
+    if (cartBloc.state.status == CartStatus.initial) {
+      cartBloc.loadCart(showLoading: false);
+    }
     super.initState();
   }
 
@@ -114,18 +117,43 @@ class _SingleProductScreenState extends State<SingleProductScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   BlocBuilder<CartBloc, CartState>(
-                    builder: (context, state) {
-                      final isInCart = context.read<CartBloc>().items.any(
-                        (element) => element.id == item.id,
-                      );
+                    builder: (context, cartState) {
+                      final cartItems = cartState.carts.isNotEmpty
+                          ? cartState.carts.first.items
+                          : const [];
+                      int? cartItemId;
+                      for (final element in cartItems) {
+                        if (element.product.id == item.id) {
+                          cartItemId = element.id;
+                          break;
+                        }
+                      }
+                      final isInCart = cartItemId != null;
+                      final isLoading =
+                          cartState.isMutating &&
+                          (cartState.activeItemId == null ||
+                              cartState.activeItemId == cartItemId);
                       return AppButton(
-                        title:
-                            isInCart
+                        title: isInCart
                             ? 'حذف از سبد خرید'
                             : "افزودن به سبد خرید",
+                        icon: isLoading
+                            ? SizedBox(
+                                width: 16.r,
+                                height: 16.r,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: colors.onPrimary,
+                                ),
+                              )
+                            : const SizedBox(),
                         onPressed: () {
+                          if (isLoading) return;
+                          if (isInCart) {
+                            context.read<CartBloc>().deleteItem(cartItemId!);
+                            return;
+                          }
                           context.read<CartBloc>().addItem(item.id, 1);
-                          context.read<CartBloc>().loadCart();
                         },
                       );
                     },
