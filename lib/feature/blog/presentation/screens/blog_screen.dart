@@ -52,34 +52,64 @@ class BlogScreen extends StatelessWidget {
                     itemCount: state.blog.length,
                     itemBuilder: (context, index) {
                       final blog = state.blog[index];
-
                       return GestureDetector(
-                        onTap: () =>  context.navigate(BlogDetailScreen(id: state.blog[index].id)),
-                        child: ListTile(
-                          leading: NetWorkImage(
-                            image: blog.image,
-                            height: 120.h,
-                            width: 120.w,
+                        onTap: () => context.navigate(
+                          BlogDetailScreen(id: state.blog[index].id),
+                        ),
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 8.w,
+                            vertical: 8.h,
                           ),
-                          title: Text(
-                            blog.title,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 8.w,
+                              vertical: 8.h,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(8.r),
+                            ),
+                            child: Row(
+                              children: [
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(6.r),
+                                  child: NetWorkImage(
+                                    image: blog.image,
+                                    height: 100.h,
+                                    width: 100.w,
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Padding(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 8.w,
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          blog.title,
+                                          style: context.textTheme.titleMedium,
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 2,
+                                        ),
+                                        12.height,
+                                        Text(
+                                          blog.author,
+                                          style: context.textTheme.titleSmall,
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 2,
+                                        ),
 
-                          subtitle: Text(
-                            blog.author,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-
-                          // trailing: Column(
-                          //   mainAxisAlignment: MainAxisAlignment.center,
-                          //   children: [
-                          //     Text('👍 ${blog.like}'),
-                          //     Text('👎 ${blog.dislike}'),
-                          //   ],
-                          // ),
                         ),
                       );
                     },

@@ -10,11 +10,9 @@ class VerifyOtpUseCase implements UsecaseGlob<VerifyOtpEntity, VerifyOtpParams> 
   VerifyOtpUseCase(this.authRepository);
   @override
   Future<Either<Failure, VerifyOtpEntity>> call(VerifyOtpParams params) async {
-    final res = await authRepository.verifyOtp(
+    return authRepository.verifyOtp(
       VerifyOtpEntity(phoneNumber: params.phoneNum, otp: params.otp),
     );
-    print('verifyOtpUseCase result: $res');
-    return res;
   }
 }
 

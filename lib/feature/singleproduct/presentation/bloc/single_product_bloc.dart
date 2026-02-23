@@ -7,26 +7,57 @@ part 'single_product_state.dart';
 class SingleProductBloc extends Cubit<SingleProductState> {
   final SingleproductRepository _singleProductRepository;
   SingleProductBloc(this._singleProductRepository)
-    : super(SingleProductInitial());
-  final List<SingleProductEntity> singleProduct = [];
-  final List<SingleProductEntity> _favorites = [];
+    : super(const SingleProductInitial());
+
+  final Set<int> _favoriteIds = {};
+
   Future<void> getSingleProduct(int id) async {
-    singleProduct.clear();
-    emit(SingleProductLoading());
+    emit(SingleProductLoading(favoriteIds: Set<int>.from(_favoriteIds)));
     final result = await _singleProductRepository.getSingleProduct(id);
-    result.fold((l) => emit(SingleProductError(failure: l)), (r) {
-      singleProduct.addAll(r);
-      emit(SingleProductLoaded(favorites: List.from(_favorites)));
-    });
+    result.fold(
+      (l) => emit(
+        SingleProductError(
+          failure: l,
+          favoriteIds: Set<int>.from(_favoriteIds),
+        ),
+      ),
+      (r) {
+        if (r.isEmpty) {
+          emit(
+            SingleProductError(
+              failure: Failure('Product not found'),
+              favoriteIds: Set<int>.from(_favoriteIds),
+            ),
+          );
+          return;
+        }
+        emit(
+          SingleProductLoaded(
+            product: r.first,
+            favoriteIds: Set<int>.from(_favoriteIds),
+          ),
+        );
+      },
+    );
   }
 
   void toggleFavorite(SingleProductEntity item) {
-    if (_favorites.contains(item)) {
-      _favorites.remove(item);
+    if (_favoriteIds.contains(item.id)) {
+      _favoriteIds.remove(item.id);
     } else {
-      _favorites.add(item);
+      _favoriteIds.add(item.id);
     }
-    emit(SingleProductLoaded(favorites: List.from(_favorites)));
-  }
 
+    final currentState = state;
+    if (currentState is SingleProductLoaded) {
+      emit(
+        currentState.copyWith(
+          favoriteIds: Set<int>.from(_favoriteIds),
+        ),
+      );
+      return;
+    }
+
+    emit(SingleProductInitial(favoriteIds: Set<int>.from(_favoriteIds)));
+  }
 }

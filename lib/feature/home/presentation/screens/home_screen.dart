@@ -5,7 +5,6 @@ import 'package:goldooni/core/utils/app_ext.dart';
 import 'package:goldooni/core/widgets/show_toast.dart';
 import 'package:goldooni/export_pkg.dart';
 import 'package:goldooni/feature/home/presentation/widgets/app_search_bar.dart';
-import 'package:goldooni/feature/home/presentation/widgets/auth_icon_button.dart';
 import 'package:goldooni/feature/home/presentation/widgets/image_slider.dart';
 import 'package:goldooni/feature/home/presentation/widgets/products_card.dart';
 import '../widgets/discount_offer_card.dart';

@@ -1,6 +1,7 @@
 part of 'cart_bloc.dart';
 
 enum CartStatus { initial, loading, success, empty, failure }
+enum CartFeedbackStatus { none, success, error }
 
 class CartState {
   final CartStatus status;
@@ -8,6 +9,8 @@ class CartState {
   final Failure failure;
   final bool isMutating;
   final int? activeItemId;
+  final CartFeedbackStatus feedbackStatus;
+  final String feedbackMessage;
 
   const CartState({
     required this.status,
@@ -15,6 +18,8 @@ class CartState {
     required this.failure,
     required this.isMutating,
     required this.activeItemId,
+    required this.feedbackStatus,
+    required this.feedbackMessage,
   });
 
   factory CartState.initial() {
@@ -24,6 +29,8 @@ class CartState {
       failure: Failure(""),
       isMutating: false,
       activeItemId: null,
+      feedbackStatus: CartFeedbackStatus.none,
+      feedbackMessage: "",
     );
   }
 
@@ -34,6 +41,9 @@ class CartState {
     bool? isMutating,
     int? activeItemId,
     bool clearActiveItemId = false,
+    CartFeedbackStatus? feedbackStatus,
+    String? feedbackMessage,
+    bool clearFeedback = false,
   }) {
     return CartState(
       status: status ?? this.status,
@@ -43,6 +53,10 @@ class CartState {
       activeItemId: clearActiveItemId
           ? null
           : (activeItemId ?? this.activeItemId),
+      feedbackStatus: clearFeedback
+          ? CartFeedbackStatus.none
+          : (feedbackStatus ?? this.feedbackStatus),
+      feedbackMessage: clearFeedback ? "" : (feedbackMessage ?? this.feedbackMessage),
     );
   }
 }

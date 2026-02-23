@@ -158,35 +158,6 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
                                   ],
                                 ),
                                 6.height,
-                                // Row(
-                                //   mainAxisAlignment:
-                                //       MainAxisAlignment.spaceBetween,
-                                //   children: [
-                                //     Container(
-                                //       padding: EdgeInsets.symmetric(
-                                //         horizontal: 8.w,
-                                //         vertical: 2.h,
-                                //       ),
-                                //       decoration: BoxDecoration(
-                                //         borderRadius: BorderRadius.circular(
-                                //           16.r,
-                                //         ),
-                                //         color: context.colors.error.withValues(
-                                //           alpha: .85,
-                                //         ),
-                                //       ),
-                                //       child: Text(
-                                //         "${product.discount}%"
-                                //             .toPersianNumber(),
-                                //         style: context.textTheme.labelMedium
-                                //             ?.copyWith(
-                                //               color: context.colors.onError,
-                                //             ),
-                                //       ),
-                                //     ),
-                                    
-                                //   ],
-                                // ),
                                 Align(
                                   alignment: Alignment.centerLeft,
                                   child: Text(
@@ -199,19 +170,6 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
                                             ),
                                       ),
                                 ),
-                                // Align(
-                                //   alignment: Alignment.centerLeft,
-                                //   child: Text(
-                                //     "${product.price.comma} تومان"
-                                //         .toPersianNumber(),
-                                //     style: context.textTheme.bodySmall
-                                //         ?.copyWith(
-                                //           decoration:
-                                //               TextDecoration.lineThrough,
-                                //           color: context.colors.outline,
-                                //         ),
-                                //   ),
-                                // ),
                               ],
                             ),
                           ),

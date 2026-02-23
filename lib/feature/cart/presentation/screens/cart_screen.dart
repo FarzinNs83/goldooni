@@ -52,252 +52,255 @@ class _CartScreenState extends State<CartScreen> {
           ],
         ),
       ),
-      body: BlocBuilder<CartBloc, CartState>(
-        builder: (context, state) {
-          if (state.status == CartStatus.loading && state.carts.isEmpty) {
-            return Center(
-              child: Directionality(
-                textDirection: TextDirection.ltr,
-                child: LoadingAnimationWidget.halfTriangleDot(
-                  color: colors.primary,
-                  size: 0.06.sh,
+      body: BlocListener<CartBloc, CartState>(
+        listenWhen: (previous, current) =>
+            previous.feedbackStatus != current.feedbackStatus &&
+            current.feedbackStatus != CartFeedbackStatus.none,
+        listener: (context, state) {
+          if (state.feedbackMessage.isNotEmpty) {
+            ShowToast().show(state.feedbackMessage, context);
+          }
+          context.read<CartBloc>().clearFeedback();
+        },
+        child: BlocBuilder<CartBloc, CartState>(
+          builder: (context, state) {
+            if (state.status == CartStatus.loading && state.carts.isEmpty) {
+              return Center(
+                child: Directionality(
+                  textDirection: TextDirection.ltr,
+                  child: LoadingAnimationWidget.halfTriangleDot(
+                    color: colors.primary,
+                    size: 0.06.sh,
+                  ),
                 ),
-              ),
-            );
-          }
+              );
+            }
 
-          if (state.status == CartStatus.failure && state.carts.isEmpty) {
-            return Center(
-              child: Text(
-                "خطا در بارگذاری سبد خرید:\n${state.failure.message}",
-                textAlign: TextAlign.center,
-              ),
-            );
-          }
+            if (state.status == CartStatus.failure && state.carts.isEmpty) {
+              return Center(
+                child: Text(
+                  "خطا در بارگذاری سبد خرید:\n${state.failure.message}",
+                  textAlign: TextAlign.center,
+                ),
+              );
+            }
 
-          if (state.status == CartStatus.empty || state.carts.isEmpty) {
-            return EmptyCart();
-          }
+            if (state.status == CartStatus.empty || state.carts.isEmpty) {
+              return EmptyCart();
+            }
 
-          final cart = state.carts.first;
-          final items = cart.items;
-          if (items.isEmpty) {
-            return EmptyCart();
-          }
+            final cart = state.carts.first;
+            final items = cart.items;
+            if (items.isEmpty) {
+              return EmptyCart();
+            }
 
-          return Column(
-            children: [
-              Expanded(
-                child: ListView.builder(
-                  itemCount: items.length,
-                  itemBuilder: (context, index) {
-                    final cartItem = items[index];
-                    final product = cartItem.product;
-                    final isThisItemMutating =
-                        state.isMutating && state.activeItemId == cartItem.id;
+            return Column(
+              children: [
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: items.length,
+                    itemBuilder: (context, index) {
+                      final cartItem = items[index];
+                      final product = cartItem.product;
+                      final isThisItemMutating =
+                          state.isMutating && state.activeItemId == cartItem.id;
 
-                    return Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 12.w,
-                        vertical: 12.h,
-                      ),
-                      child: Container(
-                        height: 0.24.sh,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12.r),
-                          color: colors.surface,
-                          boxShadow: [
-                            BoxShadow(
-                              color: colors.shadow.withValues(alpha: .08),
-                              offset: const Offset(0, 3),
-                              blurRadius: 6,
-                            ),
-                          ],
+                      return Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 12.w,
+                          vertical: 12.h,
                         ),
-                        child: Padding(
-                          padding: EdgeInsets.all(16.r),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              NetWorkImage(
-                                image: product.mainImage,
-                                width: 0.34.sw,
-                                height: double.infinity,
+                        child: Container(
+                          height: 0.24.sh,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12.r),
+                            color: colors.surface,
+                            boxShadow: [
+                              BoxShadow(
+                                color: colors.shadow.withValues(alpha: .08),
+                                offset: const Offset(0, 3),
+                                blurRadius: 6,
                               ),
-                              8.width,
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      product.title,
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: textTheme.titleLarge?.copyWith(
-                                        color: colors.secondary,
+                            ],
+                          ),
+                          child: Padding(
+                            padding: EdgeInsets.all(16.r),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                NetWorkImage(
+                                  image: product.mainImage,
+                                  width: 0.34.sw,
+                                  height: double.infinity,
+                                ),
+                                8.width,
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        product.title,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: textTheme.titleLarge?.copyWith(
+                                          color: colors.secondary,
+                                        ),
                                       ),
-                                    ),
-                                    Row(
-                                      children: [
-                                        SvgPicture.asset(
-                                          Assets.svg.discount,
-                                          colorFilter: ColorFilter.mode(
-                                            colors.error,
-                                            BlendMode.srcIn,
-                                          ),
-                                        ),
-                                        6.width,
-                                        Text(
-                                          "${(product.price - product.finalPrice).comma} تومان تخفیف"
-                                              .toPersianNumber(),
-                                          style: textTheme.bodyMedium?.copyWith(
-                                            color: colors.error,
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    Text(
-                                      "${product.finalPrice.comma} تومان"
-                                          .toPersianNumber(),
-                                      style: textTheme.titleMedium?.copyWith(
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                    Divider(
-                                      height: 16.h,
-                                      color: colors.outlineVariant,
-                                    ),
-                                    Row(
-                                      children: [
-                                        IconButton(
-                                          onPressed: isThisItemMutating
-                                              ? null
-                                              : () {
-                                                  context
-                                                      .read<CartBloc>()
-                                                      .updateItem(
-                                                        cartItem.id,
-                                                        cartItem.quantity + 1,
-                                                      );
-                                                },
-                                          icon: SvgPicture.asset(
-                                            Assets.svg.addCircle,
-                                          ),
-                                        ),
-                                        isThisItemMutating
-                                            ? Center(
-                                                child: Directionality(
-                                                  textDirection:
-                                                      TextDirection.ltr,
-                                                  child:
-                                                      LoadingAnimationWidget.halfTriangleDot(
-                                                        color: colors.primary,
-                                                        size: 24.r
-                                                      ),
-                                                ),
-                                              )
-                                            : Text(
-                                                "${cartItem.quantity} عدد"
-                                                    .toPersianNumber(),
-                                                style: textTheme.bodyLarge,
-                                              ),
-                                        IconButton(
-                                          onPressed: isThisItemMutating
-                                              ? null
-                                              : () {
-                                                  if (cartItem.quantity == 1) {
-                                                    context
-                                                        .read<CartBloc>()
-                                                        .deleteItem(
-                                                          cartItem.id,
-                                                        );
-                                                    ShowToast().show(
-                                                      "محصول از سبد خرید حذف شد",
-                                                      context,
-                                                    );
-                                                    return;
-                                                  }
-                                                  context
-                                                      .read<CartBloc>()
-                                                      .updateItem(
-                                                        cartItem.id,
-                                                        cartItem.quantity - 1,
-                                                      );
-                                                },
-                                          icon: SvgPicture.asset(
-                                            Assets.svg.minusCirlce,
-                                          ),
-                                        ),
-
-                                        const Spacer(),
-                                        IconButton(
-                                          onPressed: isThisItemMutating
-                                              ? null
-                                              : () {
-                                                  context
-                                                      .read<CartBloc>()
-                                                      .deleteItem(cartItem.id);
-                                                  ShowToast().show(
-                                                    "محصول از سبد خرید حذف شد",
-                                                    context,
-                                                  );
-                                                },
-                                          icon: SvgPicture.asset(
-                                            Assets.svg.trash,
+                                      Row(
+                                        children: [
+                                          SvgPicture.asset(
+                                            Assets.svg.discount,
                                             colorFilter: ColorFilter.mode(
                                               colors.error,
                                               BlendMode.srcIn,
                                             ),
                                           ),
+                                          6.width,
+                                          Text(
+                                            "${(product.price - product.finalPrice).comma} تومان تخفیف"
+                                                .toPersianNumber(),
+                                            style: textTheme.bodyMedium?.copyWith(
+                                              color: colors.error,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      Text(
+                                        "${product.finalPrice.comma} تومان"
+                                            .toPersianNumber(),
+                                        style: textTheme.titleMedium?.copyWith(
+                                          fontWeight: FontWeight.w600,
                                         ),
-                                      ],
-                                    ),
-                                  ],
+                                      ),
+                                      Divider(
+                                        height: 16.h,
+                                        color: colors.outlineVariant,
+                                      ),
+                                      Row(
+                                        children: [
+                                          IconButton(
+                                            onPressed: isThisItemMutating
+                                                ? null
+                                                : () {
+                                                    context
+                                                        .read<CartBloc>()
+                                                        .updateItem(
+                                                          cartItem.id,
+                                                          cartItem.quantity + 1,
+                                                        );
+                                                  },
+                                            icon: SvgPicture.asset(
+                                              Assets.svg.addCircle,
+                                            ),
+                                          ),
+                                          isThisItemMutating
+                                              ? Center(
+                                                  child: Directionality(
+                                                    textDirection:
+                                                        TextDirection.ltr,
+                                                    child: LoadingAnimationWidget
+                                                        .halfTriangleDot(
+                                                          color: colors.primary,
+                                                          size: 24.r,
+                                                        ),
+                                                  ),
+                                                )
+                                              : Text(
+                                                  "${cartItem.quantity} عدد"
+                                                      .toPersianNumber(),
+                                                  style: textTheme.bodyLarge,
+                                                ),
+                                          IconButton(
+                                            onPressed: isThisItemMutating
+                                                ? null
+                                                : () {
+                                                    if (cartItem.quantity == 1) {
+                                                      context
+                                                          .read<CartBloc>()
+                                                          .deleteItem(
+                                                            cartItem.id,
+                                                          );
+                                                      return;
+                                                    }
+                                                    context
+                                                        .read<CartBloc>()
+                                                        .updateItem(
+                                                          cartItem.id,
+                                                          cartItem.quantity - 1,
+                                                        );
+                                                  },
+                                            icon: SvgPicture.asset(
+                                              Assets.svg.minusCirlce,
+                                            ),
+                                          ),
+                                          const Spacer(),
+                                          IconButton(
+                                            onPressed: isThisItemMutating
+                                                ? null
+                                                : () {
+                                                    context
+                                                        .read<CartBloc>()
+                                                        .deleteItem(cartItem.id);
+                                                  },
+                                            icon: SvgPicture.asset(
+                                              Assets.svg.trash,
+                                              colorFilter: ColorFilter.mode(
+                                                colors.error,
+                                                BlendMode.srcIn,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
+                      );
+                    },
+                  ),
+                ),
+                Container(
+                  height: 0.12.sh,
+                  padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+                  color: colors.surface,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      AppButton(title: "ادامه فرآیند خرید", onPressed: () {}),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            "جمع سبد خرید",
+                            style: textTheme.bodyMedium?.copyWith(
+                              color: colors.onSurface.withValues(alpha: .7),
+                            ),
+                          ),
+                          4.height,
+                          Text(
+                            "${cart.totalPrice.comma} تومان".toPersianNumber(),
+                            style: textTheme.titleMedium?.copyWith(
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
                       ),
-                    );
-                  },
+                    ],
+                  ),
                 ),
-              ),
-              Container(
-                height: 0.12.sh,
-                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-                color: colors.surface,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    AppButton(title: "ادامه فرآیند خرید", onPressed: () {}),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "جمع سبد خرید",
-                          style: textTheme.bodyMedium?.copyWith(
-                            color: colors.onSurface.withValues(alpha: .7),
-                          ),
-                        ),
-                        4.height,
-                        Text(
-                          "${cart.totalPrice.comma} تومان".toPersianNumber(),
-                          style: textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          );
-        },
+              ],
+            );
+          },
+        ),
       ),
     );
   }

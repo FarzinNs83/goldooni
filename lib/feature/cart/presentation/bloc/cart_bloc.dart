@@ -14,7 +14,13 @@ class CartBloc extends Cubit<CartState> {
 
   Future<void> loadCart({bool showLoading = true}) async {
     if (showLoading) {
-      emit(state.copyWith(status: CartStatus.loading, clearActiveItemId: true));
+      emit(
+        state.copyWith(
+          status: CartStatus.loading,
+          clearActiveItemId: true,
+          clearFeedback: true,
+        ),
+      );
     }
     final result = await cartRepository.getCart();
     result.fold(
@@ -24,6 +30,8 @@ class CartBloc extends Cubit<CartState> {
           failure: Failure(l.toString()),
           isMutating: false,
           clearActiveItemId: true,
+          feedbackStatus: CartFeedbackStatus.error,
+          feedbackMessage: 'Failed to refresh cart',
         ),
       ),
       (r) => emit(
@@ -38,10 +46,22 @@ class CartBloc extends Cubit<CartState> {
   }
 
   Future<void> addItem(int productId, int quantity) async {
-    emit(state.copyWith(isMutating: true, clearActiveItemId: true));
+    emit(
+      state.copyWith(
+        isMutating: true,
+        clearActiveItemId: true,
+        clearFeedback: true,
+      ),
+    );
     try {
       await cartRepository.postProduct(productId, quantity);
       await loadCart(showLoading: false);
+      emit(
+        state.copyWith(
+          feedbackStatus: CartFeedbackStatus.success,
+          feedbackMessage: 'Item added to cart',
+        ),
+      );
     } catch (e) {
       emit(
         state.copyWith(
@@ -49,6 +69,8 @@ class CartBloc extends Cubit<CartState> {
           failure: Failure(e.toString()),
           isMutating: false,
           clearActiveItemId: true,
+          feedbackStatus: CartFeedbackStatus.error,
+          feedbackMessage: 'Could not add item to cart',
         ),
       );
     }
@@ -59,7 +81,13 @@ class CartBloc extends Cubit<CartState> {
       await deleteItem(productId);
       return;
     }
-    emit(state.copyWith(isMutating: true, activeItemId: productId));
+    emit(
+      state.copyWith(
+        isMutating: true,
+        activeItemId: productId,
+        clearFeedback: true,
+      ),
+    );
     try {
       await cartRepository.updateProduct(productId, quantity);
       final updatedCart = _updateLocalItemQuantity(productId, quantity);
@@ -71,6 +99,8 @@ class CartBloc extends Cubit<CartState> {
           carts: [updatedCart],
           isMutating: false,
           clearActiveItemId: true,
+          feedbackStatus: CartFeedbackStatus.success,
+          feedbackMessage: 'Cart updated',
         ),
       );
     } catch (e) {
@@ -80,13 +110,21 @@ class CartBloc extends Cubit<CartState> {
           failure: Failure(e.toString()),
           isMutating: false,
           clearActiveItemId: true,
+          feedbackStatus: CartFeedbackStatus.error,
+          feedbackMessage: 'Could not update cart item',
         ),
       );
     }
   }
 
   Future<void> deleteItem(int productId) async {
-    emit(state.copyWith(isMutating: true, activeItemId: productId));
+    emit(
+      state.copyWith(
+        isMutating: true,
+        activeItemId: productId,
+        clearFeedback: true,
+      ),
+    );
     try {
       await cartRepository.deleteProduct(productId);
       final updatedCart = _deleteLocalItem(productId);
@@ -98,6 +136,8 @@ class CartBloc extends Cubit<CartState> {
           carts: [updatedCart],
           isMutating: false,
           clearActiveItemId: true,
+          feedbackStatus: CartFeedbackStatus.success,
+          feedbackMessage: 'Item removed from cart',
         ),
       );
     } catch (e) {
@@ -107,9 +147,16 @@ class CartBloc extends Cubit<CartState> {
           failure: Failure(e.toString()),
           isMutating: false,
           clearActiveItemId: true,
+          feedbackStatus: CartFeedbackStatus.error,
+          feedbackMessage: 'Could not remove item from cart',
         ),
       );
     }
+  }
+
+  void clearFeedback() {
+    if (state.feedbackStatus == CartFeedbackStatus.none) return;
+    emit(state.copyWith(clearFeedback: true));
   }
 
   CartEntity _updateLocalItemQuantity(int cartItemId, int quantity) {

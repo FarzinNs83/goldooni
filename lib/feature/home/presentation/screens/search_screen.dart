@@ -106,7 +106,7 @@ class _SearchPageState extends State<SearchPage> {
           return ListView.separated(
             padding: EdgeInsets.all(16.w),
             itemCount: items.length,
-            separatorBuilder: (_, __) =>
+            separatorBuilder: (context, index) =>
                 Divider(color: colors.onSurface.withValues(alpha: .1)),
             itemBuilder: (context, index) {
               final product = items[index];
