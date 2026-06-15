@@ -1,141 +1,166 @@
-# گلدونی 🌿
+# 🌿 گلدونی | Goldooni
 
-اپلیکیشن فروشگاهی گلدونی — یک اپلیکیشن موبایل فروشگاه آنلاین گل و گیاه، ساخته شده با Flutter.
+اپلیکیشن فروشگاه آنلاین گل و گیاه، توسعه داده شده با Flutter و معماری Clean Architecture.
 
----
+<p align="center">
+  <img src="assets/screenshots/auth1.png" width="220"/>
+  <img src="assets/screenshots/auth2.png" width="220"/>
+  <img src="assets/screenshots/auth3.png" width="220"/>
+</p>
 
-## اسکرین‌شات‌ها
-
-> اسکرین‌شات‌های اپلیکیشن را اینجا قرار دهید:
-
-| ثبتنام |
-| ![Send Sms](assets/screenshots/auth1.png) | ![Verify OTP](assets/screenshots/auth2.png) | ![Register Form](assets/screenshots/auth3.png) |
-| صفحه اصلی | محصولات | سبد خرید |
-|:---------:|:-------:|:--------:|
-| ![home](assets/screenshots/home.png) | ![products](assets/screenshots/products.png) | ![cart](assets/screenshots/cart.png) |
-
-| صفحه جزئیات محصول | پروفایل |
-|:------------------:|:-------:|:-----:|
-| ![detail](assets/screenshots/single.png) | ![profile](assets/screenshots/profile.png) |
+<p align="center">
+  <b>ثبت نام و ورود با OTP</b>
+</p>
 
 ---
 
-## ویژگی‌ها
+## 📸 اسکرین‌شات‌ها
 
-- صفحه اصلی با اسلایدر و محصولات ویژه
-- مشاهده دسته‌بندی محصولات
-- جستجوی محصولات
-- مشاهده جزئیات محصول
-- سبد خرید و مدیریت سفارشات
-- ثبت‌نام و ورود با شماره موبایل (OTP)
-- وبلاگ و مقالات مرتبط با گل و گیاه
-- نقشه و موقعیت مکانی
-- پشتیبانی از زبان فارسی و راست‌چین (RTL)
+### صفحه اصلی، محصولات و سبد خرید
 
----
+<p align="center">
+  <img src="assets/screenshots/home.png" width="250"/>
+  <img src="assets/screenshots/products.png" width="250"/>
+  <img src="assets/screenshots/cart.png" width="250"/>
+</p>
 
-## فناوری‌ها و پکیج‌ها
+### جزئیات محصول و پروفایل
 
-| پکیج | کاربرد |
-|-------|--------|
-| `flutter_bloc` | مدیریت State |
-| `get_it` | Dependency Injection |
-| `dio` | درخواست‌های HTTP |
-| `flutter_osm_plugin` | نقشه و موقعیت مکانی |
-| `flutter_screenutil` | طراحی ریسپانسیو |
-| `geolocator` | دریافت موقعیت مکانی کاربر |
-| `shared_preferences` | ذخیره‌سازی محلی |
-| `flutter_svg` | نمایش SVG |
-| `carousel_slider` | اسلایدر صفحه اصلی |
-| `shimmer` | انیمیشن بارگذاری |
-| `animate_do` | انیمیشن‌های UI |
-| `flutter_styled_toast` | نوتیفیکیشن Toast |
-| `fpdart` | Functional Programming |
-| `loading_animation_widget` | انیمیشن لودینگ |
+<p align="center">
+  <img src="assets/screenshots/single.png" width="250"/>
+  <img src="assets/screenshots/profile.png" width="250"/>
+</p>
 
 ---
 
-## معماری پروژه
+## ✨ امکانات
 
-پروژه با الگوی **Clean Architecture** و **BLoC Pattern** پیاده‌سازی شده است:
+* نمایش محصولات ویژه و جدید
+* اسلایدر تبلیغاتی صفحه اصلی
+* دسته‌بندی محصولات
+* جستجوی سریع محصولات
+* مشاهده جزئیات کامل هر محصول
+* مدیریت سبد خرید
+* ثبت سفارش
+* ورود و ثبت‌نام با شماره موبایل (OTP)
+* وبلاگ و مقالات تخصصی گل و گیاه
+* نمایش موقعیت فروشگاه روی نقشه
+* پشتیبانی کامل از زبان فارسی و راست‌چین (RTL)
+* طراحی ریسپانسیو برای دستگاه‌های مختلف
 
-```
+---
+
+## 🛠️ تکنولوژی‌ها و پکیج‌ها
+
+| Package                  | Usage                  |
+| ------------------------ | ---------------------- |
+| flutter_bloc             | State Management       |
+| get_it                   | Dependency Injection   |
+| dio                      | HTTP Client            |
+| flutter_osm_plugin       | OpenStreetMap          |
+| flutter_screenutil       | Responsive UI          |
+| geolocator               | Location Services      |
+| shared_preferences       | Local Storage          |
+| flutter_svg              | SVG Support            |
+| carousel_slider          | Home Slider            |
+| shimmer                  | Skeleton Loading       |
+| animate_do               | UI Animations          |
+| flutter_styled_toast     | Toast Notifications    |
+| fpdart                   | Functional Programming |
+| loading_animation_widget | Loading Widgets        |
+
+---
+
+## 🏗️ معماری پروژه
+
+این پروژه بر اساس **Clean Architecture** و **BLoC Pattern** توسعه داده شده است.
+
+```text
 lib/
-├── core/                  # هسته اپلیکیشن
-│   ├── errors/            # مدیریت خطاها
-│   ├── resources/         # تم، رنگ‌ها و منابع مشترک
-│   ├── usecase/           # کلاس‌های UseCase پایه
-│   ├── utils/             # ابزارهای کمکی
-│   └── widgets/           # ویجت‌های مشترک
-├── feature/               # ماژول‌های اپلیکیشن
-│   ├── auth/              # احراز هویت
-│   ├── blog/              # وبلاگ
-│   ├── blog_single/       # جزئیات مقاله
-│   ├── cart/              # سبد خرید
-│   ├── cats/              # دسته‌بندی‌ها
-│   ├── home/              # صفحه اصلی
-│   ├── profile/           # پروفایل کاربر
-│   ├── singleproduct/     # جزئیات محصول
-│   └── splash/            # صفحه اسپلش
-├── di_container.dart      # تنظیمات Dependency Injection
-├── export_pkg.dart        # اکسپورت پکیج‌ها
-└── main.dart              # نقطه ورود اپلیکیشن
+├── core/
+│   ├── errors/
+│   ├── resources/
+│   ├── usecase/
+│   ├── utils/
+│   └── widgets/
+│
+├── feature/
+│   ├── auth/
+│   ├── blog/
+│   ├── blog_single/
+│   ├── cart/
+│   ├── cats/
+│   ├── home/
+│   ├── profile/
+│   ├── singleproduct/
+│   └── splash/
+│
+├── di_container.dart
+├── export_pkg.dart
+└── main.dart
 ```
 
-هر ماژول شامل سه لایه است:
-- **data**: داده‌ها و API
-- **domain**: منطق تجاری و مدل‌ها
-- **presentation**: UI و BLoC
+هر ماژول شامل سه لایه مستقل است:
+
+### Data
+
+ارتباط با API، مدل‌ها و منابع داده
+
+### Domain
+
+منطق تجاری، UseCaseها و Entityها
+
+### Presentation
+
+رابط کاربری و مدیریت State
 
 ---
 
-## نصب و اجرا
+## 🚀 نصب و اجرا
 
 ### پیش‌نیازها
 
-- Flutter SDK `>= 3.11.0`
-- Dart SDK `>= 3.11.0`
-- Android Studio یا VS Code
-- شبیه‌ساز یا دستگاه فیزیکی
+* Flutter SDK 3.11+
+* Dart SDK 3.11+
+* Android Studio یا VS Code
+* Emulator یا دستگاه فیزیکی
 
-### مراحل اجرا
+### اجرا
 
 ```bash
-# کلون کردن پروژه
 git clone https://github.com/FarzinNs83/goldooni.git
 
-# ورود به پوشه پروژه
 cd goldooni
 
-# نصب وابستگی‌ها
 flutter pub get
 
-# اجرای اپلیکیشن
 flutter run
 ```
 
 ---
 
-## ساختار فونت
+## 🔤 فونت
 
-از فونت **Vazirmatn** استفاده شده است با وزن‌های مختلف:
+این پروژه از فونت **Vazirmatn** استفاده می‌کند.
 
-| وزن | فایل |
-|-----|------|
-| 300 | Light |
-| 400 | Regular |
-| 500 | Medium |
-| 600 | SemiBold |
-| 700 | Bold |
-
----
-
-## مشارکت
-
-contributions welcome! لطفاً issues و pull request ارسال کنید.
+| Weight | Style    |
+| ------ | -------- |
+| 300    | Light    |
+| 400    | Regular  |
+| 500    | Medium   |
+| 600    | SemiBold |
+| 700    | Bold     |
 
 ---
 
-## مجوز
+## 🤝 مشارکت
 
-MIT License
+از مشارکت شما استقبال می‌شود.
+
+برای گزارش باگ‌ها یا پیشنهاد قابلیت‌های جدید، لطفاً Issue ثبت کنید یا Pull Request ارسال نمایید.
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License.
