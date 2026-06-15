@@ -5,7 +5,12 @@ class AppButton extends StatelessWidget {
   final String title;
   final void Function() onPressed;
   final Widget icon;
-  const AppButton({super.key, required this.title, required this.onPressed, this.icon = const SizedBox()});
+  const AppButton({
+    super.key,
+    required this.title,
+    required this.onPressed,
+    this.icon = const SizedBox(),
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -19,11 +24,9 @@ class AppButton extends StatelessWidget {
         children: [
           Text(
             title,
-            style: textTheme.labelLarge?.copyWith(
-              color: colors.onPrimary,
-            ),
+            style: textTheme.labelLarge?.copyWith(color: colors.onPrimary),
           ),
-          icon
+          icon,
         ],
       ),
     );

@@ -18,8 +18,8 @@ class ApiConstants {
   static const String patchCart = '$baseUrl/cart/rud_item/';
   static const String deleteCart = '$baseUrl/cart/rud_item/';
   static const String searchByName = '$baseUrl/products/search/?q=';
-  static const String searchByCategory = '$baseUrl/products/search_category/?q=';
+  static const String searchByCategory =
+      '$baseUrl/products/search_category/?q=';
   static const String blog = '$baseUrl/blog/list_article/?page=1';
   static const String blogDetails = '$baseUrl/blog/detail_article/';
-
 }

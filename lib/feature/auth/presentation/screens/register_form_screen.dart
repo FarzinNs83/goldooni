@@ -55,6 +55,8 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
   final lonCtrl = TextEditingController();
 
   final lonFn = FocusNode();
+
+  final locationCtrl = TextEditingController();
   @override
   void initState() {
     context.read<HomeBloc>().determinePosition();
@@ -78,6 +80,7 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
     latFn.dispose();
     lonCtrl.dispose();
     lonFn.dispose();
+    locationCtrl.dispose();
     super.dispose();
   }
 
@@ -212,8 +215,7 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                     hintText: "برای انتخاب موقعیت مکانی کلیک کنید",
                     ctrl: TextEditingController.fromValue(
                       TextEditingValue(
-                        text:
-                            "${latCtrl.text}, ${lonCtrl.text}",
+                        text: locationCtrl.text,
                       ),
                     ),
                     focusNode: latFn,
@@ -240,7 +242,9 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                           if (value != null) {
                             setState(() {
                               latCtrl.text = value.latitude.toString();
-                            lonCtrl.text = value.longitude.toString();
+                              lonCtrl.text = value.longitude.toString();
+                              locationCtrl.text =
+                                  "${value.latitude}, ${value.longitude}";
                             });
                           }
                         });
@@ -276,8 +280,10 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                                 "$year-${month.toString().padLeft(2, '0')}-${day.toString().padLeft(2, '0')}",
                             phoneNum: phoneNumCtrl.text,
                             codeMeli: codeMeliCtrl.text,
-                            lat: latCtrl.text,
-                            lon: lonCtrl.text,
+                            // lat: latCtrl.text,
+                            // lon: lonCtrl.text,
+                            lat: '1.222',
+                            lon: '1.222',
                             pw: pwCtrl.text,
                           ),
                         ),

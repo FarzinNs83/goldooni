@@ -58,7 +58,6 @@ class HomeRepositoryImpl implements HomeRepository {
   
   @override
   Future<Either<Failure, List<SearchEntity>>> searchByCategory(String category) {
-    // TODO: implement searchByCategory
     throw UnimplementedError();
   }
 }

@@ -499,10 +499,10 @@ class _ReviewCard extends StatelessWidget {
     final colors = context.colors;
     final textTheme = context.textTheme;
 
-    String author = 'Goldooni user';
+    String author = 'کاربر گلدونی';
     String body =
-        'Good quality product with quick delivery. The packaging was also clean and safe.';
-    String date = 'Recently';
+        'عالی بودش، کیفیتش خوب بود و دقیقا همونی بود که تو عکس نشون داده شده بود، من خیلی راضی ام از خرید این محصول و حتما پیشنهادش میکنم به بقیه.';
+    String date = 'اخیرا';
 
     if (comment is Map<String, dynamic>) {
       author = (comment['user_name'] ?? comment['user'] ?? author).toString();
